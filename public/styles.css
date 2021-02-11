@@ -1,0 +1,205 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    width: 720px;
+    height: 100vh;
+    background-image: url('./assets/imgs/bgMatch.png');
+    background-size: cover;
+    margin: 0 auto;
+    position: relative;
+}
+
+.scorebar{
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+}
+
+.team-score, .opponent-score{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.score-img{
+    width: 300px;
+    height: 100px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.team-score .score-img{
+    background-image: url('./assets/imgs/yourTeam.png');
+}
+
+.opponent-score .score-img{
+    background-image: url('./assets/imgs/otherTeam.png');
+}
+
+.score{
+    font-size: 40px;
+}
+
+.player-cards{
+    width: 720px;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 50px;
+}
+
+.player-cards button{
+    width: 80px;
+    height: 114px;
+    background-size: cover;
+    border-radius: 10px;
+    margin: 2px;
+    background: url('./assets/imgs/cards/CQ.png');
+}
+
+.teammate-img, .opponent1-img, .opponent2-img{
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    background: url('./assets/imgs/user.jpg');
+}
+
+.teammate-img{
+    left: 50%;
+    top: 100px;
+    transform: translateX(-50%);
+}
+
+.opponent1-img{
+    top: 50%;
+    transform: translateY(-50%);
+    left: 20px;
+}
+
+.opponent2-img{
+    top: 50%;
+    transform: translateY(-50%);
+    right: 20px;
+}
+
+.trump{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    left: 5vh;
+    top: 25vh;
+    background-size: cover;
+}
+
+.trump-cards{
+    position: absolute;
+    width: 80%;
+    height: 50vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    background: rgb(34, 32, 32);
+    z-index: 10;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.trump-cards button{
+    width: 100px;
+    height: 100px;
+    margin: 20px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.table{
+    width: 300px;
+    height: 300px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.table button{
+    width: 100px;
+    height: 142px;
+    position: absolute;
+    background-size: cover;
+    border-radius: 10px;
+}
+
+#player-card{
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0px;
+}
+
+#teammate-card{
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+}
+
+#opponent1-card{
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+}
+
+#opponent2-card{
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+}
+
+.winner-display{
+    display: none;
+    font-size: 50px;
+    margin: auto auto;
+}
+
+.home{
+    width: 720px;
+    height: 100vh;
+    background-image: url('./assets/imgs/home.png');
+    background-size: cover;
+    margin: 0 auto;
+}
+
+.game-links{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 300px;
+}
+
+.game-links a div{
+    width: 300px;
+    height: 100px;
+    margin-top: 20px;
+}
+
+.omi{
+    background: url('./Assets/omi.png');
+}
+
+.gama{
+    background: url('./Assets/gama.png');
+}
+
+.balloon{
+    background: url('./Assets/balloon.png');
+}
