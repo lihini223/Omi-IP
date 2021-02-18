@@ -65,13 +65,21 @@ function startNewOmiGame(io, room) {
 
     const game = games.get(room);
 
+    game.gameStarted = true;
     game.matchNumber += 1;
     
     newMatch(io, room, game);
 }
 
 function newMatch(io, room, game) {
-    console.log('match started' + game.matchNumber);
+    game.dealCards();
+
+    for (let i = 1; i <= 4; i++) {
+        const socketId = game.players.get(i).socketId;
+        const playerHand = game.players.get(i).hand;
+        
+        io.to(socketId).emit('player-hand', Array.from(playerHand));
+    }
 }
 
 /*const Deck = require('./Deck');

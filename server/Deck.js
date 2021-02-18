@@ -4,6 +4,8 @@ class Deck {
     }
 
     generateDeck() {
+        this.deck = [];
+        
         let card = (suit, value, img) => {
             this.name = suit + value;
             this.suit = suit;

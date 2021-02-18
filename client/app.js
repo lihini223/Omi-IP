@@ -27,4 +27,9 @@ socket.on('game-started', () => {
     console.log('Game started');
 });
 
+socket.on('player-hand', hand => {
+    console.log(hand);
+    console.log(typeof hand);
+});
+
 socket.emit('card-played', 'data');
