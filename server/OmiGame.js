@@ -7,6 +7,8 @@ class OmiGame {
         this.players = new Map();
         this.room = room;
         this.gameStarted = false;
+        this.gameFinished = false;
+        this.matchNumber = 0;
     }
 
     addPlayer(player) {

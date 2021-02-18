@@ -11,6 +11,8 @@ module.exports = (io) => {
         
         // check if room exists
         if (io.sockets.adapter.rooms.get(room)) {
+            if (!games.get(room)) return;
+
             if (games.get(room).gameStarted == false && io.sockets.adapter.rooms.get(room).size < 4) {
                 socket.join(room);
 
@@ -60,6 +62,16 @@ module.exports = (io) => {
 
 function startNewOmiGame(io, room) {
     io.to(room).emit('game-started');
+
+    const game = games.get(room);
+
+    game.matchNumber += 1;
+    
+    newMatch(io, room, game);
+}
+
+function newMatch(io, room, game) {
+    console.log('match started' + game.matchNumber);
 }
 
 /*const Deck = require('./Deck');

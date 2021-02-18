@@ -21,9 +21,14 @@ mongoose.connect(DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .catch(err => console.log(err));
 
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 const server = http.createServer(app);
+
+const omiRouter = require('./routes/omi');
+
+app.use('/omi', omiRouter);
 
 const io = socketio(server, {
     cors: {
