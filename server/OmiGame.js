@@ -1,13 +1,14 @@
 const Deck = require('./Deck');
 
 class OmiGame {
-    constructor(room) {
+    constructor(room, scoreLimit) {
         this.deck = new Deck();
         this.players = new Map();
         this.room = room;
         this.gameStarted = false;
         this.gameFinished = false;
         this.matchNumber = 0;
+        this.scoreLimit = scoreLimit;
     }
 
     addPlayer(player) {

@@ -8,6 +8,8 @@ module.exports = (io) => {
         const room = socket.handshake.query.room;
 
         const { playerId, playerName } = socket.handshake.query;
+
+        let scoreLimit = parseInt(socket.handshake.query.scoreLimit);
         
         // check if room exists
         if (io.sockets.adapter.rooms.get(room)) {
@@ -31,12 +33,20 @@ module.exports = (io) => {
             // create a new room
             socket.join(room);
 
-            games.set(room, new OmiGame(room));
+            if (!scoreLimit || isNaN(scoreLimit) || scoreLimit < 2 || scoreLimit > 10) {
+                scoreLimit = 10;
+            }
+
+            games.set(room, new OmiGame(room, scoreLimit));
 
             // first player will be player 1
             const player = new Player(playerId, playerName, 1, socket.id);
             games.get(room).addPlayer(player);
         }
+
+        socket.on('play-card', card => {
+            playCard(socket.id, card);
+        });
 
         // player disconnect
         socket.on('disconnect', () => {
@@ -80,6 +90,10 @@ function newMatch(io, room, game) {
         
         io.to(socketId).emit('player-hand', Array.from(playerHand));
     }
+}
+
+function playCard(socketId, card) {
+    console.log(socketId, card);
 }
 
 /*const Deck = require('./Deck');

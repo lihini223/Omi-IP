@@ -6,56 +6,56 @@ class Deck {
     generateDeck() {
         this.deck = [];
         
-        let card = (suit, value, img) => {
+        let card = (suit, value, imageName) => {
             this.name = suit + value;
             this.suit = suit;
             this.value = value;
-            this.img = img;
-            return { name: this.name, suit: this.suit, value: this.value, img: this.img };
+            this.imageName = imageName;
+            return { name: this.name, suit: this.suit, value: this.value, imageName: this.imageName };
         }
 
-        let values = ['7', '8', '9', '10', '11', '12', '13', '14']; //11 = Jack, 12 = Queen, 13 = King, 14 = Ace
-        let suits = ['1', '2', '3', '4']; //1 = Spades, 2 = Hearts, 3 = Clubs, 4 = Diamonds
-        let imgs = [
-            "url('./assets/imgs/cards/S7.jpg')",
-            "url('./assets/imgs/cards/S8.jpg')",
-            "url('./assets/imgs/cards/S9.jpg')",
-            "url('./assets/imgs/cards/S10.jpg')",
-            "url('./assets/imgs/cards/SJ.jpg')",
-            "url('./assets/imgs/cards/SQ.jpg')",
-            "url('./assets/imgs/cards/SK.jpg')",
-            "url('./assets/imgs/cards/SA.jpg')",
-            "url('./assets/imgs/cards/H7.jpg')",
-            "url('./assets/imgs/cards/H8.jpg')",
-            "url('./assets/imgs/cards/H9.jpg')",
-            "url('./assets/imgs/cards/H10.jpg')",
-            "url('./assets/imgs/cards/HJ.jpg')",
-            "url('./assets/imgs/cards/HQ.jpg')",
-            "url('./assets/imgs/cards/HK.jpg')",
-            "url('./assets/imgs/cards/HA.jpg')",
-            "url('./assets/imgs/cards/C7.jpg')",
-            "url('./assets/imgs/cards/C8.jpg')",
-            "url('./assets/imgs/cards/C9.jpg')",
-            "url('./assets/imgs/cards/C10.jpg')",
-            "url('./assets/imgs/cards/CJ.jpg')",
-            "url('./assets/imgs/cards/CQ.jpg')",
-            "url('./assets/imgs/cards/CK.jpg')",
-            "url('./assets/imgs/cards/CA.jpg')",
-            "url('./assets/imgs/cards/D7.jpg')",
-            "url('./assets/imgs/cards/D8.jpg')",
-            "url('./assets/imgs/cards/D9.jpg')",
-            "url('./assets/imgs/cards/D10.jpg')",
-            "url('./assets/imgs/cards/DJ.jpg')",
-            "url('./assets/imgs/cards/DQ.jpg')",
-            "url('./assets/imgs/cards/DK.jpg')",
-            "url('./assets/imgs/cards/DA.jpg')"
+        const values = ['7', '8', '9', '10', '11', '12', '13', '14']; //11 = Jack, 12 = Queen, 13 = King, 14 = Ace
+        const suits = ['1', '2', '3', '4']; //1 = Spades, 2 = Hearts, 3 = Clubs, 4 = Diamonds
+        const imageNames = [
+            "S7.jpg",
+            "S8.jpg",
+            "S9.jpg",
+            "S10.jpg",
+            "SJ.jpg",
+            "SQ.jpg",
+            "SK.jpg",
+            "SA.jpg",
+            "H7.jpg",
+            "H8.jpg",
+            "H9.jpg",
+            "H10.jpg",
+            "HJ.jpg",
+            "HQ.jpg",
+            "HK.jpg",
+            "HA.jpg",
+            "C7.jpg",
+            "C8.jpg",
+            "C9.jpg",
+            "C10.jpg",
+            "CJ.jpg",
+            "CQ.jpg",
+            "CK.jpg",
+            "CA.jpg",
+            "D7.jpg",
+            "D8.jpg",
+            "D9.jpg",
+            "D10.jpg",
+            "DJ.jpg",
+            "DQ.jpg",
+            "DK.jpg",
+            "DA.jpg"
         ];
 
-        let imgCount = 0;
+        let imageIndex = 0;
         for (let s = 0; s < suits.length; s++) {
             for (let v = 0; v < values.length; v++) {
-                this.deck.push(card(suits[s], values[v], imgs[imgCount]));
-                imgCount++;
+                this.deck.push(card(suits[s], values[v], imageNames[imageIndex]));
+                imageIndex++;
             }
         }
     }
