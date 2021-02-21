@@ -43,9 +43,12 @@ class OmiGame {
     }
 
     playCard(card) {
+        // check if trump is called before playing
+        if (!this.trump) return;
+
         if (this.players.get(this.currentPlayer).playCard(card)) {
             // if table is empty, current player is first player of that round
-            if (this.table[0] && this.table[1] && this.table[2] && this.table[3]) {
+            if (!this.table[0] && !this.table[1] && !this.table[2] && !this.table[3]) {
                 this.currentRoundFirstPlayer = this.currentPlayer;
             }
 
@@ -79,21 +82,29 @@ class OmiGame {
 
         let i = 0;
         while (i < 4) {
+            const currentCardSuit = this.table[i].slice(0, 1);
+            const currentCardValue = parseInt(this.table[i].slice(1));
+
             // check if current card is a trump and round winning card is not a trump
-            if (this.table[i].suit == this.trump && currentRoundWinnerCard.suit != this.trump) {
+            if (currentCardSuit == this.trump && currentRoundWinnerCard.slice(0, 1) != this.trump) {
                 currentRoundWinnerCard = this.table[i];
                 currentRoundWinner = i;
             }
 
             // check if current card is higher than the round winning card
-            if (this.table[i].suit == currentRoundWinnerCard.suit && this.table[i].value > currentRoundWinnerCard.value) {
+            if (currentCardSuit == currentRoundWinnerCard.slice(0, 1) && currentCardValue > parseInt(currentRoundWinnerCard.slice(1))) {
                 currentRoundWinnerCard = this.table[i];
                 currentRoundWinner = i;
             }
+
+            i++;
         }
 
         this.clearTable();
 
+        // +1 due to currentRoundWinner representing array position
+        this.currentPlayer = currentRoundWinner + 1;
+        
         return currentRoundWinner + 1;
     }
 

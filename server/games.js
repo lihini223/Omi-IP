@@ -111,6 +111,10 @@ function playCard(io, socketId, room, card) {
 
         if (playedCard) {
             io.to(room).emit('played-card', { player: playerNumber, card });
+
+            if (game.table[0] && game.table[1] && game.table[2] && game.table[3]) {
+                roundWinner(io, room, game);
+            }
         }
     }
 }
@@ -127,6 +131,12 @@ function callTrump(io, socketId, room, trump) {
             io.to(room).emit('trump-card', { trump });
         }
     }
+}
+
+function roundWinner(io, room, game) {
+    const currentRoundWinner = game.roundWinner();
+
+    console.log(currentRoundWinner);
 }
 
 function getPlayerNumber(players, socketId) {
