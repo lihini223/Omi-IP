@@ -15,6 +15,36 @@
         Omi
         <div class="table" id="table"></div>
         <div class="player-hand" id="playerHand"></div>
+        <div>
+            <h5>Trump</h5>
+            <img src="" id="trumpCard" alt="Trump" style="display: none;">
+        </div>
+        <div class="trump-call" id="trumpCall" style="display: none;">
+            <div class="card" onclick="callTrump('S')">
+                <img src="assets/imgs/spades.png" alt="Spades">
+                <div class="card-body">
+                    <h5 class="card-title">Spades</h5>
+                </div>
+            </div>
+            <div class="card" onclick="callTrump('H')">
+                <img src="assets/imgs/hearts.png" alt="Hearts">
+                <div class="card-body">
+                    <h5 class="card-title">Hearts</h5>
+                </div>
+            </div>
+            <div class="card" onclick="callTrump('C')">
+                <img src="assets/imgs/clubs.png" alt="Clubs">
+                <div class="card-body">
+                    <h5 class="card-title">Clubs</h5>
+                </div>
+            </div>
+            <div class="card" onclick="callTrump('D')">
+                <img src="assets/imgs/diamonds.png" alt="Diamonds">
+                <div class="card-body">
+                    <h5 class="card-title">Diamonds</h5>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

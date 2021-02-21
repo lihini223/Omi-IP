@@ -16,6 +16,8 @@ const socket = io("http://localhost:3000", {
 
 const table = document.querySelector('#table');
 const playerHand = document.querySelector('#playerHand');
+const trumpCallDiv = document.querySelector('#trumpCall');
+const trumpCardImg = document.querySelector('#trumpCard');
 
 let playerNumber = -1;
 
@@ -52,8 +54,29 @@ socket.on('played-card', data => {
     }
 });
 
+socket.on('call-trump', () => {
+    trumpCallDiv.style.display = 'flex';
+});
+
+socket.on('trump-card', data => {
+    const trump = data.trump;
+
+    trumpCardImg.style.display = '';
+
+    if (trump == 'S') {
+        trumpCardImg.src = 'assets/imgs/spades.png';
+    } else if (trump == 'H') {
+        trumpCardImg.src = 'assets/imgs/hearts.png';
+    } else if (trump == 'C') {
+        trumpCardImg.src = 'assets/imgs/clubs.png';
+    } else if (trump == 'D') {
+        trumpCardImg.src = 'assets/imgs/diamonds.png';
+    }
+});
+
 function createHand(hand) {
     playerHand.innerHTML = '';
+    trumpCallDiv.style.display = 'none';
 
     hand.forEach(card => {
         const cardDiv = document.createElement('div');
@@ -78,4 +101,7 @@ function createHand(hand) {
     });
 }
 
-socket.emit('card-played', 'data');
+function callTrump(trump) {
+    socket.emit('call-trump', trump);
+    trumpCallDiv.style.display = 'none';
+}

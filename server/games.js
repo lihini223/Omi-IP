@@ -51,6 +51,10 @@ module.exports = (io) => {
             playCard(io, socket.id, room, card);
         });
 
+        socket.on('call-trump', trump => {
+            callTrump(io, socket.id, room, trump);
+        });
+
         // player disconnect
         socket.on('disconnect', () => {
             if (!games.get(room)) return;
@@ -89,6 +93,10 @@ function newMatch(io, room, game) {
         const playerHand = game.players.get(i).hand;
         
         io.to(socketId).emit('player-hand', Array.from(playerHand.values()));
+
+        if (getPlayerNumber(game.players, socketId) == game.currentPlayer) {
+            io.to(socketId).emit('call-trump');
+        }
     }
 }
 
@@ -103,6 +111,20 @@ function playCard(io, socketId, room, card) {
 
         if (playedCard) {
             io.to(room).emit('played-card', { player: playerNumber, card });
+        }
+    }
+}
+
+function callTrump(io, socketId, room, trump) {
+    const game = games.get(room);
+
+    const playerNumber = getPlayerNumber(game.players, socketId);
+
+    if (playerNumber == game.currentPlayer && game.trump == null) {
+        const calledTrump = game.callTrump(trump);
+
+        if (calledTrump) {
+            io.to(room).emit('trump-card', { trump });
         }
     }
 }

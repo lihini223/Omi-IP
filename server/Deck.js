@@ -14,8 +14,8 @@ class Deck {
             return { name: this.name, suit: this.suit, value: this.value, imageName: this.imageName };
         }
 
-        const values = ['7', '8', '9', '10', '11', '12', '13', '14']; //11 = Jack, 12 = Queen, 13 = King, 14 = Ace
-        const suits = ['1', '2', '3', '4']; //1 = Spades, 2 = Hearts, 3 = Clubs, 4 = Diamonds
+        const values = ['7', '8', '9', '10', '11', '12', '13', '14']; // 11 = Jack, 12 = Queen, 13 = King, 14 = Ace
+        const suits = ['S', 'H', 'C', 'D']; // S = Spades, H = Hearts, C = Clubs, D = Diamonds
         const imageNames = [
             "S7.jpg",
             "S8.jpg",

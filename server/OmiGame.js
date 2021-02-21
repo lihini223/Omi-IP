@@ -10,8 +10,9 @@ class OmiGame {
         this.matchNumber = 0;
         this.scoreLimit = scoreLimit;
         this.currentPlayer = -1;
-        this.trump = -1;
+        this.trump = null;
         this.table = [null, null, null, null];
+        this.currentRoundFirstPlayer = -1;
     }
 
     addPlayer(player) {
@@ -23,6 +24,7 @@ class OmiGame {
         this.gameStarted = true;
         this.matchNumber = 1;
         this.currentPlayer = 1;
+        this.currentRoundFirstPlayer = 1;
 
         this.dealCards();
     }
@@ -42,6 +44,12 @@ class OmiGame {
 
     playCard(card) {
         if (this.players.get(this.currentPlayer).playCard(card)) {
+            // if table is empty, current player is first player of that round
+            if (this.table[0] && this.table[1] && this.table[2] && this.table[3]) {
+                this.currentRoundFirstPlayer = this.currentPlayer;
+            }
+
+            // put card in player position
             this.table[this.currentPlayer - 1] = card;
             
             this.currentPlayer += 1;
@@ -53,6 +61,44 @@ class OmiGame {
         }
 
         return false;
+    }
+
+    callTrump(trump) {
+        if (trump == 'S' || trump == 'H' || trump == 'C' || trump == 'D') {
+            this.trump = trump;
+            return true;
+        }
+
+        return false;
+    }
+
+    roundWinner() {
+        // -1 due to array indexing, player 1 will be 0 in array
+        let currentRoundWinner = this.currentRoundFirstPlayer - 1;
+        let currentRoundWinnerCard = this.table[this.currentRoundFirstPlayer - 1];
+
+        let i = 0;
+        while (i < 4) {
+            // check if current card is a trump and round winning card is not a trump
+            if (this.table[i].suit == this.trump && currentRoundWinnerCard.suit != this.trump) {
+                currentRoundWinnerCard = this.table[i];
+                currentRoundWinner = i;
+            }
+
+            // check if current card is higher than the round winning card
+            if (this.table[i].suit == currentRoundWinnerCard.suit && this.table[i].value > currentRoundWinnerCard.value) {
+                currentRoundWinnerCard = this.table[i];
+                currentRoundWinner = i;
+            }
+        }
+
+        this.clearTable();
+
+        return currentRoundWinner + 1;
+    }
+
+    clearTable() {
+        this.table = [null, null, null, null];
     }
 }
 
