@@ -20,7 +20,9 @@ module.exports = (io) => {
 
                 const playerNumber = io.sockets.adapter.rooms.get(room).size;
                 const player = new Player(playerId, playerName, playerNumber, socket.id);
+                socket.emit('player-number', playerNumber);
                 games.get(room).addPlayer(player);
+                
             } else {
                 socket.emit('room-full');
             }
@@ -41,11 +43,12 @@ module.exports = (io) => {
 
             // first player will be player 1
             const player = new Player(playerId, playerName, 1, socket.id);
+            socket.emit('player-number', 1);
             games.get(room).addPlayer(player);
         }
 
         socket.on('play-card', card => {
-            playCard(socket.id, card);
+            playCard(io, socket.id, room, card);
         });
 
         // player disconnect
@@ -75,25 +78,41 @@ function startNewOmiGame(io, room) {
 
     const game = games.get(room);
 
-    game.gameStarted = true;
-    game.matchNumber += 1;
+    game.startGame();
     
     newMatch(io, room, game);
 }
 
 function newMatch(io, room, game) {
-    game.dealCards();
-
     for (let i = 1; i <= 4; i++) {
         const socketId = game.players.get(i).socketId;
         const playerHand = game.players.get(i).hand;
         
-        io.to(socketId).emit('player-hand', Array.from(playerHand));
+        io.to(socketId).emit('player-hand', Array.from(playerHand.values()));
     }
 }
 
-function playCard(socketId, card) {
-    console.log(socketId, card);
+function playCard(io, socketId, room, card) {
+    const game = games.get(room);
+
+    const playerNumber = getPlayerNumber(game.players, socketId);
+
+    // check if player is the current player
+    if (playerNumber == game.currentPlayer) {
+        const playedCard = game.playCard(card.name);
+
+        if (playedCard) {
+            io.to(room).emit('played-card', { player: playerNumber, card });
+        }
+    }
+}
+
+function getPlayerNumber(players, socketId) {
+    for (let [playerNumber, player] of players.entries()) {
+        if (player.socketId == socketId) {
+            return playerNumber;
+        }
+    }
 }
 
 /*const Deck = require('./Deck');

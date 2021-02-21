@@ -9,6 +9,9 @@ class OmiGame {
         this.gameFinished = false;
         this.matchNumber = 0;
         this.scoreLimit = scoreLimit;
+        this.currentPlayer = -1;
+        this.trump = -1;
+        this.table = [null, null, null, null];
     }
 
     addPlayer(player) {
@@ -16,16 +19,40 @@ class OmiGame {
         this.players.set(playerNumber, player);
     }
 
+    startGame() {
+        this.gameStarted = true;
+        this.matchNumber = 1;
+        this.currentPlayer = 1;
+
+        this.dealCards();
+    }
+
     dealCards() {
         this.deck.generateDeck();
         this.deck.shuffle();
 
-        for (let i = 0; i < 8; i++) {
-            this.players.get(1).hand.add(this.deck.deal());
-            this.players.get(2).hand.add(this.deck.deal());
-            this.players.get(3).hand.add(this.deck.deal());
-            this.players.get(4).hand.add(this.deck.deal());
+        // deal 8 cards to each player
+        for (let i = 1; i <= 4; i++) {
+            for (let j = 0; j < 8; j++) {
+                const card = this.deck.deal();
+                this.players.get(i).hand.set(card.name, card);
+            }
         }
+    }
+
+    playCard(card) {
+        if (this.players.get(this.currentPlayer).playCard(card)) {
+            this.table[this.currentPlayer - 1] = card;
+            
+            this.currentPlayer += 1;
+            if (this.currentPlayer > 4) {
+                this.currentPlayer = 1;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
 

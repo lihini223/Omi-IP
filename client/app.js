@@ -17,12 +17,20 @@ const socket = io("http://localhost:3000", {
 const table = document.querySelector('#table');
 const playerHand = document.querySelector('#playerHand');
 
+let playerNumber = -1;
+
 socket.on('room-full', () => {
     console.log('Room is full');
 });
 
 socket.on('player-disconnect', () => {
+    //window.location.replace('http://localhost:5000');
+
     console.log('Player disconnected');
+});
+
+socket.on('player-number', data => {
+    playerNumber = data;
 });
 
 socket.on('game-started', () => {
@@ -33,11 +41,25 @@ socket.on('player-hand', hand => {
     createHand(hand);
 });
 
+socket.on('played-card', data => {
+    if (data.player == playerNumber) {
+        try {
+            const cardDiv = playerHand.querySelector(`div[data-card-name="${data.card.name}"]`);
+            cardDiv.remove();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+});
+
 function createHand(hand) {
+    playerHand.innerHTML = '';
+
     hand.forEach(card => {
         const cardDiv = document.createElement('div');
         cardDiv.classList.add('card');
         cardDiv.style.width = '18rem';
+        cardDiv.setAttribute('data-card-name', card.name);
 
         const img = document.createElement('img');
         img.src = `assets/imgs/cards/${card.imageName}`;
@@ -45,15 +67,9 @@ function createHand(hand) {
         const cardBody = document.createElement('div');
         cardBody.innerText = card.imageName.split('.')[0];
 
-        const btn = document.createElement('button');
-        btn.classList.add('btn');
-        btn.classList.add('btn-primary');
-        btn.innerText = 'Play';
-        btn.addEventListener('click', () => {
-            socket.emit('play-card', card.name);
+        cardDiv.addEventListener('click', () => {
+            socket.emit('play-card', card);
         });
-
-        cardBody.appendChild(btn);
 
         cardDiv.appendChild(img);
         cardDiv.appendChild(cardBody);

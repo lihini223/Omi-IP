@@ -4,11 +4,17 @@ class Player {
         this.name = name;
         this.playerNumber = playerNumber;
         this.socketId = socketId;
-        this.hand = new Set();
+        this.hand = new Map();
     }
 
-    playCard() {
-        console.log('play');
+    playCard(card) {
+        if (this.hand.has(card)) {
+            this.hand.delete(card);
+
+            return true;
+        }
+
+        return false;
     }
 }
 
