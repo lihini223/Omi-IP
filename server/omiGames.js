@@ -4,77 +4,98 @@ const OmiGame = require('./OmiGame');
 const games = new Map();
 
 module.exports = (io) => {
-    io.on('connection', socket => {
-        const room = socket.handshake.query.room;
-
-        const { playerId, playerName } = socket.handshake.query;
-
-        let scoreLimit = parseInt(socket.handshake.query.scoreLimit);
-        
-        // check if room exists
-        if (io.sockets.adapter.rooms.get(room)) {
-            if (!games.get(room)) return;
-
-            if (games.get(room).gameStarted == false && io.sockets.adapter.rooms.get(room).size < 4) {
-                socket.join(room);
-
-                const playerNumber = io.sockets.adapter.rooms.get(room).size;
-                const player = new Player(playerId, playerName, playerNumber, socket.id);
-                socket.emit('player-number', playerNumber);
-                games.get(room).addPlayer(player);
-                
-            } else {
-                socket.emit('room-full');
-            }
-
-            // start game if 4 players join a room
-            if (games.get(room).players.size == 4) {
-                startNewOmiGame(io, room);
-            }
-        } else {
-            // create a new room
-            socket.join(room);
-
-            if (!scoreLimit || isNaN(scoreLimit) || scoreLimit < 2 || scoreLimit > 10) {
-                scoreLimit = 10;
-            }
-
-            games.set(room, new OmiGame(room, scoreLimit));
-
-            // first player will be player 1
-            const player = new Player(playerId, playerName, 1, socket.id);
-            socket.emit('player-number', 1);
-            games.get(room).addPlayer(player);
+    // validate socket connection before connecting client to games
+    io.use((socket, next) => {
+        if (validateSocket(socket)) {
+            return next();
         }
 
-        socket.on('play-card', card => {
-            playCard(io, socket.id, room, card);
-        });
-
-        socket.on('call-trump', trump => {
-            callTrump(io, socket.id, room, trump);
-        });
-
-        // player disconnect
-        socket.on('disconnect', () => {
-            if (!games.get(room)) return;
-
-            // player left before the game started
-            if (games.get(room).gameStarted == false) {
-                io.to(room).emit('player-left', 'Player left');
-                return;
-            }
-
-            // send a player disconnect event if game is started
-            for (let i = 1; i <= games.get(room).players.size; i++) {
-                if (games.get(room).players.get(i).socketId == socket.id) {
-                    io.to(room).emit('player-disconnect');
-                    games.delete(room);
-                    return;
-                }
-            }
-        });
+        return next(new Error('Invalid user'));
     });
+
+    io.on('connection', socket => {
+        clientConnect(io, socket);
+    });
+}
+
+// validate the socket, return true if valid and false if not valid
+function validateSocket(socket) {
+    return true;
+}
+
+function clientConnect(io, socket) {
+    const room = socket.handshake.query.room;
+    const { playerId, playerName } = socket.handshake.query;
+    let scoreLimit = parseInt(socket.handshake.query.scoreLimit);
+    
+    // check if room exists
+    if (io.sockets.adapter.rooms.get(room)) {
+        if (!games.get(room)) return;
+
+        if (games.get(room).gameStarted == false && io.sockets.adapter.rooms.get(room).size < 4) {
+            socket.join(room);
+
+            const playerNumber = io.sockets.adapter.rooms.get(room).size;
+            const player = new Player(playerId, playerName, playerNumber, socket.id);
+            socket.emit('player-number', playerNumber);
+            games.get(room).addPlayer(player);
+            
+        } else {
+            socket.emit('room-full');
+        }
+
+        // start game if 4 players join a room
+        if (games.get(room).players.size == 4) {
+            startNewOmiGame(io, room);
+        }
+    } else {
+        // create a new room
+        socket.join(room);
+
+        if (!scoreLimit || isNaN(scoreLimit) || scoreLimit < 2 || scoreLimit > 10) {
+            scoreLimit = 10;
+        }
+
+        // create a new omi game and add to games list
+        games.set(room, new OmiGame(room, scoreLimit));
+
+        // first player will be player 1
+        const player = new Player(playerId, playerName, 1, socket.id);
+        socket.emit('player-number', 1);
+        games.get(room).addPlayer(player);
+    }
+
+    socket.on('play-card', card => {
+        playCard(io, socket.id, room, card);
+    });
+
+    socket.on('call-trump', trump => {
+        callTrump(io, socket.id, room, trump);
+    });
+
+    // player disconnect
+    socket.on('disconnect', () => {
+        clientDisconnect(io, socket, room);
+    });
+}
+
+function clientDisconnect(io, socket, room) {
+    if (!games.get(room)) return;
+
+    // player left before the game started
+    /*if (games.get(room).gameStarted == false) {
+        io.to(room).emit('player-left', 'Player left');
+        return;
+    }*/
+
+    // send a player disconnect event if game is started
+    for (let i = 1; i <= games.get(room).players.size; i++) {
+        if (games.get(room).players.get(i).socketId == socket.id) {
+            io.to(room).emit('player-disconnect');
+            games.delete(room);
+            return;
+        }
+    }
 }
 
 function startNewOmiGame(io, room) {
@@ -88,6 +109,8 @@ function startNewOmiGame(io, room) {
 }
 
 function newMatch(io, room, game) {
+    game.newMatch();
+    
     for (let i = 1; i <= 4; i++) {
         const socketId = game.players.get(i).socketId;
         const playerHand = game.players.get(i).hand;

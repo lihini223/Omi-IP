@@ -13,6 +13,10 @@ class OmiGame {
         this.trump = null;
         this.table = [null, null, null, null];
         this.currentRoundFirstPlayer = -1;
+        this.teamOneScore = 0; // total game score
+        this.teamTwoScore = 0;
+        this.teamOnePoints = 0; // current match points
+        this.teamTwoPoints = 0;
     }
 
     addPlayer(player) {
@@ -26,7 +30,14 @@ class OmiGame {
         this.currentPlayer = 1;
         this.currentRoundFirstPlayer = 1;
 
+        //this.newMatch();
+    }
+
+    newMatch() {
         this.dealCards();
+
+        this.teamOnePoints = 0;
+        this.teamTwoPoints = 0;
     }
 
     dealCards() {
