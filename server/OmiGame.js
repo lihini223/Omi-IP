@@ -17,6 +17,7 @@ class OmiGame {
         this.teamTwoScore = 0;
         this.teamOnePoints = 0; // current match points
         this.teamTwoPoints = 0;
+        this.trumpCaller = 0;
     }
 
     addPlayer(player) {
@@ -38,6 +39,14 @@ class OmiGame {
 
         this.teamOnePoints = 0;
         this.teamTwoPoints = 0;
+        this.trump = null;
+
+        this.trumpCaller += 1;
+        if (this.trumpCaller > 4) {
+            this.trumpCaller = 1;
+        }
+
+        this.currentPlayer = this.trumpCaller;
     }
 
     dealCards() {
@@ -46,6 +55,8 @@ class OmiGame {
 
         // deal 8 cards to each player
         for (let i = 1; i <= 4; i++) {
+            this.players.get(i).hand.clear();
+
             for (let j = 0; j < 8; j++) {
                 const card = this.deck.deal();
                 this.players.get(i).hand.set(card.name, card);
@@ -121,6 +132,14 @@ class OmiGame {
 
     clearTable() {
         this.table = [null, null, null, null];
+    }
+
+    addPoints(team, points) {
+        if (team == 1) {
+            this.teamOnePoints += points;
+        } else if (team == 2) {
+            this.teamTwoPoints += points;
+        }
     }
 }
 

@@ -117,7 +117,7 @@ function newMatch(io, room, game) {
         
         io.to(socketId).emit('player-hand', Array.from(playerHand.values()));
 
-        if (getPlayerNumber(game.players, socketId) == game.currentPlayer) {
+        if (getPlayerNumber(game.players, socketId) == game.trumpCaller) {
             io.to(socketId).emit('call-trump');
         }
     }
@@ -147,7 +147,7 @@ function callTrump(io, socketId, room, trump) {
 
     const playerNumber = getPlayerNumber(game.players, socketId);
 
-    if (playerNumber == game.currentPlayer && game.trump == null) {
+    if (playerNumber == game.trumpCaller && game.trump == null) {
         const calledTrump = game.callTrump(trump);
 
         if (calledTrump) {
@@ -159,9 +159,18 @@ function callTrump(io, socketId, room, trump) {
 function roundWinner(io, room, game) {
     const currentRoundWinner = game.roundWinner();
 
-    console.log(currentRoundWinner);
+    if (currentRoundWinner == 1 || currentRoundWinner == 3) {
+        game.addPoints(1, 1);
+    } else if (currentRoundWinner == 2 || currentRoundWinner == 4) {
+        game.addPoints(2, 1);
+    }
+
+    if ((game.teamOnePoints + game.teamTwoPoints) >= 8) {
+        newMatch(io, room, game);
+    }
 }
 
+// helper function to get player number of socket
 function getPlayerNumber(players, socketId) {
     for (let [playerNumber, player] of players.entries()) {
         if (player.socketId == socketId) {
@@ -170,19 +179,7 @@ function getPlayerNumber(players, socketId) {
     }
 }
 
-/*const Deck = require('./Deck');
-
-let deck = new Deck();
-
-let player1Hand = [];
-let player2Hand = [];
-let player3Hand = [];
-let player4Hand = [];
-
-let connections = [null, null, null, null];
-let playerCards = [null, null, null, null]; // current cards on the table
-let playerTurn = 0; // current player turn
-let trump = 0; // trump card of that hand
+/*
 let trumpCall = 0; // player who calls trump
 let team1Points = 0; // team 1 rounds won
 let team2Points = 0; // team 2 rounds won
@@ -200,27 +197,9 @@ io.on('connection', socket => {
         }
     }
 
-    connections[playerIndex] = false;
-
-    socket.emit('player-number', playerIndex); // send player index number
-    console.log(`Player ${playerIndex} has connected`);
-
     if(playerIndex == -1) return; // return out of function if server is full
 
     socket.broadcast.emit('player-connection', playerIndex); // send new player join
-
-    // start game if 4 players join
-    if(connections[0] != null && connections[1] != null && connections[2] != null && connections[3] != null){
-        startGame();
-        io.emit('start-game', 'Game started');
-    }
-
-    // listen for trump call
-    socket.on('trump-called', data => {
-        trump = data;
-        console.log(trump);
-        io.emit('current-trump', trump);
-    });
     
     playerTurn = trumpCall;
 
@@ -285,12 +264,6 @@ io.on('connection', socket => {
                 }
             }
         }
-    });
-
-    socket.on('disconnect', () => {
-        console.log(`Player ${playerIndex} has disconnected`);
-        connections[playerIndex] = null; // remove player from server
-        //socket.broadcast.emit('player-connection', playerIndex);
     });
 });
 
@@ -359,38 +332,4 @@ function newRound(){
     }
     io.emit('player-turn', playerTurn);
 }
-
-function dealCards(){
-    for(let i = 0; i < 8; i++){
-        player1Hand.push(deck.deal());
-        player2Hand.push(deck.deal());
-        player3Hand.push(deck.deal());
-        player4Hand.push(deck.deal());
-    }
-}
-
-function roundWinner(cards, tCard, fCardPlayer){
-    let playerCards = cards;
-    let trumpCard = tCard;
-    let firstCardPlayer = fCardPlayer;
-    let highestCard = playerCards[firstCardPlayer];
-    let highestCardPlayer = fCardPlayer;
-    
-    let i = 0;
-    while(i < 4){
-        //if(cards[i] != highestCard){
-            if(cards[i].suit == trumpCard && highestCard.suit != trumpCard){ //check if current card is a trump card and if highest card is not a trump card
-                highestCard = cards[i];
-                highestCardPlayer = i;
-            }
-            if(cards[i].suit == highestCard.suit && cards[i].value > highestCard.value){ //check if current card is higher than highest card
-                highestCard = cards[i];
-                highestCardPlayer = i;
-            }
-        //}
-
-        i++;
-    }
-
-    return highestCardPlayer;
-}*/
+*/
