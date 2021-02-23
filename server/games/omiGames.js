@@ -1,5 +1,5 @@
-const Player = require('./Player');
-const OmiGame = require('./OmiGame');
+const Player = require('./omi/Player');
+const OmiGame = require('./omi/OmiGame');
 
 const games = new Map();
 

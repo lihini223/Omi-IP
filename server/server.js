@@ -36,7 +36,7 @@ const io = socketio(server, {
     }
 });
 
-require('./omiGames')(io);
+require('./games/omiGames')(io);
 
 const PORT = process.env.PORT || 3000;
 
