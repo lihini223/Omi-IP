@@ -1,0 +1,46 @@
+.omi-table{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* border: 2px solid red; */
+    height: 96vh;
+}
+.table{
+    /* border: 2px solid blue; */
+    height: 70vh;
+    width: 20vw;
+}
+.player-1-cards{
+    margin: -110px;
+}
+.box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* border: 2px solid red; */
+    height: 90vh;
+    width: 70vw;
+}
+.rotate{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* border: 2px solid red; */
+    transform: rotate(90deg);
+}
+.team-1-cards{
+    margin-left: -10px;
+}
+.team-2-cards{
+    margin-left: -10px;
+}
+.card-hover:hover{
+    cursor: pointer;
+    transition: 0.5s;
+    transform: translateY(-20px);
+}
+
+
