@@ -18,11 +18,15 @@ const table = document.querySelector('#table');
 const playerHand = document.querySelector('#playerHand');
 const trumpCallDiv = document.querySelector('#trumpCall');
 const trumpCardImg = document.querySelector('#trumpCard');
+const player1Card = document.querySelector('#player-1-card');
+const player2Card = document.querySelector('#player-2-card');
+const player3Card = document.querySelector('#player-3-card');
+const player4Card = document.querySelector('#player-4-card');
 
 let playerNumber = -1;
 
-socket.on('room-full', () => {
-    console.log('Room is full');
+socket.on('room-error', data => {
+    console.log(data);
 });
 
 socket.on('player-disconnect', () => {
@@ -44,14 +48,11 @@ socket.on('player-hand', hand => {
 });
 
 socket.on('played-card', data => {
+    console.log(data);
     if (data.player == playerNumber) {
-        try {
-            const cardDiv = playerHand.querySelector(`div[data-card-name="${data.card.name}"]`);
-            cardDiv.remove();
-        } catch (err) {
-            console.log(err);
-        }
+        playCard(data);
     }
+    tableCard(data);
 });
 
 socket.on('call-trump', () => {
@@ -59,19 +60,25 @@ socket.on('call-trump', () => {
 });
 
 socket.on('trump-card', data => {
-    const trump = data.trump;
+    console.log(data);
+    trumpCard(data);
+});
 
-    trumpCardImg.style.display = '';
+socket.on('round-winner', data => {
+    console.log(data);
+    roundWinner(data);
+});
 
-    if (trump == 'S') {
-        trumpCardImg.src = 'assets/imgs/spades.png';
-    } else if (trump == 'H') {
-        trumpCardImg.src = 'assets/imgs/hearts.png';
-    } else if (trump == 'C') {
-        trumpCardImg.src = 'assets/imgs/clubs.png';
-    } else if (trump == 'D') {
-        trumpCardImg.src = 'assets/imgs/diamonds.png';
-    }
+socket.on('match-winner', data => {
+    console.log(data);
+});
+
+socket.on('match-scores', data => {
+    console.log(data);
+});
+
+socket.on('game-finished', data => {
+    console.log(data);
 });
 
 function createHand(hand) {
@@ -104,4 +111,52 @@ function createHand(hand) {
 function callTrump(trump) {
     socket.emit('call-trump', trump);
     trumpCallDiv.style.display = 'none';
+}
+
+function playCard(data) {
+    try {
+        const cardDiv = playerHand.querySelector(`div[data-card-name="${data.card.name}"]`);
+        cardDiv.remove();
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+function trumpCard(data) {
+    const trump = data.trump;
+
+    trumpCardImg.style.display = '';
+
+    if (trump == 'S') {
+        trumpCardImg.src = 'assets/imgs/spades.png';
+    } else if (trump == 'H') {
+        trumpCardImg.src = 'assets/imgs/hearts.png';
+    } else if (trump == 'C') {
+        trumpCardImg.src = 'assets/imgs/clubs.png';
+    } else if (trump == 'D') {
+        trumpCardImg.src = 'assets/imgs/diamonds.png';
+    }
+}
+
+function tableCard(data) {
+    if (data.player == 1) {
+        player1Card.src = `assets/imgs/cards/${data.card.imageName}`;
+    } else if (data.player == 2) {
+        player2Card.src = `assets/imgs/cards/${data.card.imageName}`;
+    } else if (data.player == 3) {
+        player3Card.src = `assets/imgs/cards/${data.card.imageName}`;
+    } else if (data.player == 4) {
+        player4Card.src = `assets/imgs/cards/${data.card.imageName}`;
+    }
+}
+
+function roundWinner(data) {
+    setTimeout(clearTable, 1000);
+}
+
+function clearTable() {
+    player1Card.src = '';
+    player2Card.src = '';
+    player3Card.src = '';
+    player4Card.src = '';
 }

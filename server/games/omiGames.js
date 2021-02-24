@@ -1,3 +1,5 @@
+const { validateSocket } = require('../config/auth');
+
 const Player = require('./omi/Player');
 const OmiGame = require('./omi/OmiGame');
 
@@ -18,11 +20,6 @@ module.exports = (io) => {
     });
 }
 
-// validate the socket, return true if valid and false if not valid
-function validateSocket(socket) {
-    return true;
-}
-
 function clientConnect(io, socket) {
     const room = socket.handshake.query.room;
     const { playerId, playerName } = socket.handshake.query;
@@ -33,15 +30,22 @@ function clientConnect(io, socket) {
         if (!games.get(room)) return;
 
         if (games.get(room).gameStarted == false && io.sockets.adapter.rooms.get(room).size < 4) {
+            // check if player is already in the room
+            for (const player of games.get(room).players.values()) {
+                if (playerId == player.id) {
+                    socket.emit('room-error', { messsage: 'Player already in the room '});
+                    return;
+                }
+            }
+
             socket.join(room);
 
             const playerNumber = io.sockets.adapter.rooms.get(room).size;
             const player = new Player(playerId, playerName, playerNumber, socket.id);
             socket.emit('player-number', playerNumber);
             games.get(room).addPlayer(player);
-            
         } else {
-            socket.emit('room-full');
+            socket.emit('room-error', { message: 'Room is full' });
         }
 
         // start game if 4 players join a room
@@ -151,7 +155,7 @@ function callTrump(io, socketId, room, trump) {
         const calledTrump = game.callTrump(trump);
 
         if (calledTrump) {
-            io.to(room).emit('trump-card', { trump });
+            io.to(room).emit('trump-card', { player: playerNumber, trump });
         }
     }
 }
@@ -165,9 +169,45 @@ function roundWinner(io, room, game) {
         game.addPoints(2, 1);
     }
 
+    // send current game state
+    io.to(room).emit('round-winner', {
+        roundWinner: currentRoundWinner,
+        teamOnePoints: game.teamOnePoints,
+        teamTwoPoints: game.teamTwoPoints
+    });
+
     if ((game.teamOnePoints + game.teamTwoPoints) >= 8) {
-        newMatch(io, room, game);
+        if (game.teamOnePoints > game.teamTwoPoints) {
+            game.addScore(1, 1);
+            io.to(room).emit('match-winner', { matchWinner: 'Team 1' });
+        } else if (game.teamTwoPoints > game.teamOnePoints) {
+            game.addScore(2, 1);
+            io.to(room).emit('match-winner', { matchWinner: 'Team 2' });
+        } else {
+            game.tieMatches += 1;
+            io.to(room).emit('match-winner', { matchWinner: 'Tie Match' });
+        }
+
+        // send match scores
+        io.to(room).emit('match-scores', {
+            teamOneScore: game.teamOneScore,
+            teamTwoScore: game.teamTwoScore,
+            ties: game.tieMatches
+        });
+
+        // start next match or end game
+        if (game.teamOneScore >= game.scoreLimit || game.teamTwoScore >= game.scoreLimit) {
+            endGame(io, room, game);
+        } else {
+            newMatch(io, room, game);
+        }
     }
+}
+
+function endGame(io, room, game) {
+    game.endGame();
+
+    io.to(room).emit('game-finished', { gameWinner: game.winner });
 }
 
 // helper function to get player number of socket
