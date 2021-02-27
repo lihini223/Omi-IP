@@ -8,6 +8,7 @@ const games = new Map();
 module.exports = (io) => {
     // validate socket connection before connecting client to games
     io.use((socket, next) => {
+        
         if (validateSocket(socket)) {
             return next();
         }
