@@ -15,21 +15,24 @@ const cors = require('cors');
 const app = express();
 
 // database connection
-/*const DB_URI = process.env.MONGODB_URI;
+const DB_URI = process.env.MONGODB_URI;
 mongoose.connect(DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.log(err));*/
+    .catch(err => console.log(err));
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(cors());
 
 const server = http.createServer(app);
 
 const omiRouter = require('./routes/omi');
+const userRouter = require('./routes/users');
 const downloadsRouter = require('./routes/downloads');
 
 app.use('/omi', omiRouter);
+app.use('/users', userRouter);
 app.use('/downloads', downloadsRouter);
 
 const io = socketio(server, {
