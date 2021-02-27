@@ -27,8 +27,10 @@ app.use(cors());
 const server = http.createServer(app);
 
 const omiRouter = require('./routes/omi');
+const downloadsRouter = require('./routes/downloads');
 
 app.use('/omi', omiRouter);
+app.use('/downloads', downloadsRouter);
 
 const io = socketio(server, {
     cors: {
