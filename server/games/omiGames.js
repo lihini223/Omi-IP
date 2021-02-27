@@ -1,7 +1,7 @@
 const { validateSocket } = require('../config/auth');
 
-const Player = require('./omi/Player');
 const OmiGame = require('./omi/OmiGame');
+const Player = require('./omi/Player');
 
 const games = new Map();
 

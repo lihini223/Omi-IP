@@ -5,14 +5,6 @@ class Deck {
 
     generateDeck() {
         this.deck = [];
-        
-        let card = (suit, value, imageName) => {
-            this.name = suit + value;
-            this.suit = suit;
-            this.value = value;
-            this.imageName = imageName;
-            return { name: this.name, suit: this.suit, value: this.value, imageName: this.imageName };
-        }
 
         const values = ['7', '8', '9', '10', '11', '12', '13', '14']; // 11 = Jack, 12 = Queen, 13 = King, 14 = Ace
         const suits = ['S', 'H', 'C', 'D']; // S = Spades, H = Hearts, C = Clubs, D = Diamonds
@@ -51,28 +43,33 @@ class Deck {
             "DA.jpg"
         ];
 
+        const createCard = (suit, value, imageName) => {
+            const name = suit + value;
+            return { name, suit, value, imageName };
+        }
+
         let imageIndex = 0;
         for (let s = 0; s < suits.length; s++) {
             for (let v = 0; v < values.length; v++) {
-                this.deck.push(card(suits[s], values[v], imageNames[imageIndex]));
+                this.deck.push(createCard(suits[s], values[v], imageNames[imageIndex]));
                 imageIndex++;
             }
         }
     }
 
     shuffle() {
-        let currentIndex = this.deck.length, tempVal, randIndex;
+        let currentIndex = this.deck.length, tempCard, randomIndex;
         while (currentIndex != 0) {
-            randIndex = Math.floor(Math.random() * currentIndex);
+            randomIndex = Math.floor(Math.random() * currentIndex);
             currentIndex -= 1;
-            tempVal = this.deck[currentIndex];
-            this.deck[currentIndex] = this.deck[randIndex];
-            this.deck[randIndex] = tempVal;
+            tempCard = this.deck[currentIndex];
+            this.deck[currentIndex] = this.deck[randomIndex];
+            this.deck[randomIndex] = tempCard;
         }
     }
 
     deal() {
-        let dealtCard = this.deck.shift();
+        const dealtCard = this.deck.shift();
         return dealtCard;
     }
 }
