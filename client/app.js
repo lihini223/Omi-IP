@@ -1,14 +1,29 @@
 const urlString = window.location.href;
 const url = new URL(urlString);
-const playerId = url.searchParams.get('playerId');
-const playerName = url.searchParams.get('playerName');
 const room = url.searchParams.get('room');
 const scoreLimit = url.searchParams.get('scoreLimit');
 
+function getCookie() {
+    const name = 'omi-token' + '=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while(c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    
+    return "";
+}
+
+
 const socket = io("http://localhost:3000", {
     query: {
-        playerId,
-        playerName,
+        token: getCookie(),
         room,
         scoreLimit
     }
