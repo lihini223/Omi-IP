@@ -8,52 +8,13 @@
 </head>
 <body>
     <div class="container">
-        <form>
-            <div class="mb-3">
-                <label for="playerId">ID</label>
-                <input type="text" name="playerId" id="playerId" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="playerName">Name</label>
-                <input type="text" name="playerName" id="playerName" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="room">Room</label>
-                <input type="text" name="room" id="room" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="scoreLimit">Score Limit</label>
-                <input type="number" name="scoreLimit" id="scoreLimit" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary">Join</button>
-        </form>
+        <button onclick="play()">Play</button>
     </div>
 
     <script>
-        const electron = require('electron');
-        const { ipcRenderer } = electron;
-
-        const form = document.querySelector('form');
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const formData = new FormData(form);
-
-            const playerId = formData.get('playerId');
-            const playerName = formData.get('playerName');
-            const room = formData.get('room');
-            const scoreLimit = formData.get('scoreLimit');
-
-            const playerData = {
-                playerId,
-                playerName,
-                room,
-                scoreLimit
-            };
-
-            ipcRenderer.send('player-data', playerData);
-        });
+        function play() {
+            window.location = 'login.html';
+        }
     </script>
 </body>
 </html>

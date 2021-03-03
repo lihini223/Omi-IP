@@ -45,20 +45,26 @@
     </div>
 
     <script>
+        const fs = require('fs').promises;
         const electron = require('electron');
         const { ipcRenderer } = electron;
+        const urlString = window.location.href;
+        const url = new URL(urlString);
+        const room = url.searchParams.get('room');
+        const scoreLimit = url.searchParams.get('scoreLimit');
 
-        ipcRenderer.on('player-data', (err, data) => {
+        /*ipcRenderer.on('player-data', (err, data) => {
             connectClient(data);
-        });
+        });*/
 
-        function connectClient(playerData) {
+        async function connectGame() {
+            const token = await fs.readFile('token.txt', 'utf-8');
+
             const socket = io("http://localhost:3000", {
                 query: {
-                    playerId: playerData.playerId,
-                    playerName: playerData.playerName,
-                    room: playerData.room,
-                    scoreLimit: playerData.scoreLimit
+                    token,
+                    room,
+                    scoreLimit
                 }
             });
 
@@ -207,27 +213,28 @@
             function tableCard(data) {
                 if (data.player == 1) {
                 player1Card.src = `assets/imgs/cards/${data.card.imageName}`;
-            } else if (data.player == 2) {
-                player2Card.src = `assets/imgs/cards/${data.card.imageName}`;
-            } else if (data.player == 3) {
-                player3Card.src = `assets/imgs/cards/${data.card.imageName}`;
-            } else if (data.player == 4) {
-                player4Card.src = `assets/imgs/cards/${data.card.imageName}`;
+                } else if (data.player == 2) {
+                    player2Card.src = `assets/imgs/cards/${data.card.imageName}`;
+                } else if (data.player == 3) {
+                    player3Card.src = `assets/imgs/cards/${data.card.imageName}`;
+                } else if (data.player == 4) {
+                    player4Card.src = `assets/imgs/cards/${data.card.imageName}`;
+                }
+            }
+
+            function roundWinner(data) {
+                setTimeout(clearTable, 1000);
+            }
+
+            function clearTable() {
+                player1Card.src = '';
+                player2Card.src = '';
+                player3Card.src = '';
+                player4Card.src = '';
             }
         }
 
-        function roundWinner(data) {
-            setTimeout(clearTable, 1000);
-        }
-
-        function clearTable() {
-            player1Card.src = '';
-            player2Card.src = '';
-            player3Card.src = '';
-            player4Card.src = '';
-        }
-        }
-        
+        connectGame();
     </script>
 </body>
 </html>

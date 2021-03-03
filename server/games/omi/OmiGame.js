@@ -27,6 +27,18 @@ class OmiGame {
         this.players.set(playerNumber, player);
     }
 
+    getPlayers() {
+        const players = [];
+        this.players.forEach(player => {
+            players.push({
+                playerName: player.name,
+                playerNumber: player.playerNumber
+            });
+        });
+
+        return players;
+    }
+
     startGame() {
         this.gameStarted = true;
         this.matchNumber = 1;

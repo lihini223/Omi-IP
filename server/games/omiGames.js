@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken');
+
+const User = require('../models/User');
 const { validateSocket } = require('../config/auth');
 
 const OmiGame = require('./omi/OmiGame');
@@ -8,7 +11,6 @@ const games = new Map();
 module.exports = (io) => {
     // validate socket connection before connecting client to games
     io.use((socket, next) => {
-        
         if (validateSocket(socket)) {
             return next();
         }
@@ -16,14 +18,26 @@ module.exports = (io) => {
         return next(new Error('Error authenticating user.'));
     });
 
-    io.on('connection', socket => {
-        clientConnect(io, socket);
+    io.on('connection', async (socket) => {
+        try {
+            const userTokenData = jwt.verify(socket.handshake.query.token, process.env.JWT_TOKEN);
+
+            const user = await User.findOne({ _id: userTokenData.dbId });
+            
+            if (user.username == userTokenData.username) {
+                clientConnect(io, socket, user);
+            }
+        } catch (err) {
+            console.log(err);
+        }
     });
 }
 
-function clientConnect(io, socket) {
+function clientConnect(io, socket, user) {
+    const playerId = user._id;
+    const playerName = user.username;
+
     const room = socket.handshake.query.room;
-    const { playerId, playerName } = socket.handshake.query;
     let scoreLimit = parseInt(socket.handshake.query.scoreLimit);
     
     // check if room exists
@@ -45,13 +59,14 @@ function clientConnect(io, socket) {
             const player = new Player(playerId, playerName, playerNumber, socket.id);
             socket.emit('player-number', playerNumber);
             games.get(room).addPlayer(player);
+            io.to(room).emit('player-connect', { players: games.get(room).getPlayers() });
+
+            // start game if 4 players join a room
+            if (games.get(room).players.size == 4) {
+                startNewOmiGame(io, room);
+            }
         } else {
             socket.emit('room-error', { message: 'Room is full' });
-        }
-
-        // start game if 4 players join a room
-        if (games.get(room).players.size == 4) {
-            startNewOmiGame(io, room);
         }
     } else {
         // create a new room
@@ -131,6 +146,8 @@ function newMatch(io, room, game) {
 function playCard(io, socketId, room, card) {
     const game = games.get(room);
 
+    if (!game) return;
+
     const playerNumber = getPlayerNumber(game.players, socketId);
 
     // check if player is the current player
@@ -149,6 +166,8 @@ function playCard(io, socketId, room, card) {
 
 function callTrump(io, socketId, room, trump) {
     const game = games.get(room);
+
+    if (!game) return;
 
     const playerNumber = getPlayerNumber(game.players, socketId);
 
