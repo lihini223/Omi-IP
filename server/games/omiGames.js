@@ -10,24 +10,29 @@ const games = new Map();
 
 module.exports = (io) => {
     // validate socket connection before connecting client to games
-    io.use((socket, next) => {
+    /*io.use((socket, next) => {
         if (validateSocket(socket)) {
             return next();
         }
 
         return next(new Error('Error authenticating user.'));
-    });
+    });*/
 
     io.on('connection', async (socket) => {
         try {
-            const userTokenData = jwt.verify(socket.handshake.query.token, process.env.JWT_TOKEN);
+            if (validateSocket(socket)) {
+                const userTokenData = jwt.verify(socket.handshake.query.token, process.env.JWT_TOKEN);
 
-            const user = await User.findOne({ _id: userTokenData.dbId });
+                const user = await User.findOne({ _id: userTokenData.dbId });
             
-            if (user.username == userTokenData.username) {
-                clientConnect(io, socket, user);
+                if (user.username == userTokenData.username) {
+                    clientConnect(io, socket, user);
+                }
+            } else {
+                socket.emit('connection-error', { error: 'Invalid token' });
             }
         } catch (err) {
+            socket.emit('connection-error', { error: 'Connection error' });
             console.log(err);
         }
     });

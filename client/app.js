@@ -40,6 +40,11 @@ const player4Card = document.querySelector('#player-4-card');
 
 let playerNumber = -1;
 
+socket.on('connection-error', data => {
+    console.log(data);
+    window.location = 'login.html';
+});
+
 // sends any errors that can occur while joining room (room full, already in the room)
 socket.on('room-error', data => {
     console.log(data);

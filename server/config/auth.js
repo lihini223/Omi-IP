@@ -7,7 +7,7 @@ function validateSocket(socket) {
         return true;
     }
     catch(er){
-        console.log(er);
+        //console.log(er);
         return false;
     }
 }
