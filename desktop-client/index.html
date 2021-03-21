@@ -8,25 +8,13 @@
 </head>
 <body>
     <div class="container">
-        <form action="http://localhost:3000/omi/join" method="POST">
-            <div class="mb-3">
-                <label for="playerId">ID</label>
-                <input type="text" name="playerId" id="playerId" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="playerName">Name</label>
-                <input type="text" name="playerName" id="playerName" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="room">Room</label>
-                <input type="text" name="room" id="room" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="scoreLimit">Score Limit</label>
-                <input type="number" name="scoreLimit" id="scoreLimit" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary">Join</button>
-        </form>
+        <button onclick="play()">Play</button>
     </div>
+
+    <script>
+        function play() {
+            window.location = 'login.html';
+        }
+    </script>
 </body>
 </html>

@@ -2,15 +2,15 @@ const path = require('path');
 const url = require('url');
 const electron = require('electron');
 
-const { app, BrowserWindow, Menu } = electron;
+const { app, BrowserWindow, Menu, ipcMain } = electron;
 
 let mainWindow;
 let gameWindow;
 
 app.on('ready', () => {
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1280,
+        height: 720,
         webPreferences: {
             nodeIntegration: true
         }
@@ -22,7 +22,7 @@ app.on('ready', () => {
         slashes: true
     }));
 
-    mainWindow.on('closed', () => {
+    /*mainWindow.on('closed', () => {
         app.quit();
-    });
+    });*/
 });
