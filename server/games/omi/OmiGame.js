@@ -15,14 +15,28 @@ class OmiGame {
         this.currentRoundFirstPlayer = -1;
         this.teamOneScore = 0; // total game score
         this.teamTwoScore = 0;
+        this.tieMatches = 0;
         this.teamOnePoints = 0; // current match points
         this.teamTwoPoints = 0;
         this.trumpCaller = 0;
+        this.winner = null;
     }
 
     addPlayer(player) {
         const playerNumber = player.playerNumber;
         this.players.set(playerNumber, player);
+    }
+
+    getPlayers() {
+        const players = [];
+        this.players.forEach(player => {
+            players.push({
+                playerName: player.name,
+                playerNumber: player.playerNumber
+            });
+        });
+
+        return players;
     }
 
     startGame() {
@@ -54,21 +68,24 @@ class OmiGame {
         this.deck.shuffle();
 
         // deal 8 cards to each player
-        for (let i = 1; i <= 4; i++) {
-            this.players.get(i).hand.clear();
+        this.players.forEach(player => {
+            player.hand.clear();
 
-            for (let j = 0; j < 8; j++) {
+            for (let i = 0; i < 8; i++) {
                 const card = this.deck.deal();
-                this.players.get(i).hand.set(card.name, card);
+                player.hand.set(card.name, card);
             }
-        }
+            player.initializePlayer();
+        });
     }
 
     playCard(card) {
         // check if trump is called before playing
         if (!this.trump) return;
 
-        if (this.players.get(this.currentPlayer).playCard(card)) {
+        const player = this.players.get(this.currentPlayer);
+
+        if (player.validateCard(card, this.table[this.currentRoundFirstPlayer - 1]) && player.playCard(card)) {
             // if table is empty, current player is first player of that round
             if (!this.table[0] && !this.table[1] && !this.table[2] && !this.table[3]) {
                 this.currentRoundFirstPlayer = this.currentPlayer;
@@ -89,7 +106,14 @@ class OmiGame {
     }
 
     callTrump(trump) {
-        if (trump == 'S' || trump == 'H' || trump == 'C' || trump == 'D') {
+        const trumps = new Set(['S', 'H', 'C', 'D']);
+        
+        /*if (trump == 'S' || trump == 'H' || trump == 'C' || trump == 'D') {
+            this.trump = trump;
+            return true;
+        }*/
+
+        if (trumps.has(trump)) {
             this.trump = trump;
             return true;
         }
@@ -139,6 +163,33 @@ class OmiGame {
             this.teamOnePoints += points;
         } else if (team == 2) {
             this.teamTwoPoints += points;
+        }
+    }
+
+    addScore(team, score) {
+        if (team == 1) {
+            this.teamOneScore += score;
+        } else if (team == 2) {
+            this.teamTwoScore += score;
+        }
+    }
+
+    gameState() {
+        return {
+            teamOneScore: this.teamOneScore,
+            teamTwoScore: this.teamTwoScore,
+            currentRoundFirstPlayer: this.currentRoundFirstPlayer,
+            table: this.table
+        }
+    }
+
+    endGame() {
+        this.gameFinished = true;
+
+        if (this.teamOneScore > this.teamTwoScore) {
+            this.winner = 1;
+        } else if (this.teamTwoScore > this.teamOneScore) {
+            this.winner = 2;
         }
     }
 }

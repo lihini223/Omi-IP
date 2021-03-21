@@ -1,31 +1,48 @@
-const Player = require('./omi/Player');
+const jwt = require('jsonwebtoken');
+
+const User = require('../models/User');
+const { validateSocket } = require('../config/auth');
+
 const OmiGame = require('./omi/OmiGame');
+const Player = require('./omi/Player');
 
 const games = new Map();
 
 module.exports = (io) => {
     // validate socket connection before connecting client to games
-    io.use((socket, next) => {
+    /*io.use((socket, next) => {
         if (validateSocket(socket)) {
             return next();
         }
 
         return next(new Error('Error authenticating user.'));
-    });
+    });*/
 
-    io.on('connection', socket => {
-        clientConnect(io, socket);
+    io.on('connection', async (socket) => {
+        try {
+            if (validateSocket(socket)) {
+                const userTokenData = jwt.verify(socket.handshake.query.token, process.env.JWT_TOKEN);
+
+                const user = await User.findOne({ _id: userTokenData.dbId });
+            
+                if (user.username == userTokenData.username) {
+                    clientConnect(io, socket, user);
+                }
+            } else {
+                socket.emit('connection-error', { error: 'Invalid token' });
+            }
+        } catch (err) {
+            socket.emit('connection-error', { error: 'Connection error' });
+            console.log(err);
+        }
     });
 }
 
-// validate the socket, return true if valid and false if not valid
-function validateSocket(socket) {
-    return true;
-}
+function clientConnect(io, socket, user) {
+    const playerId = user._id;
+    const playerName = user.username;
 
-function clientConnect(io, socket) {
     const room = socket.handshake.query.room;
-    const { playerId, playerName } = socket.handshake.query;
     let scoreLimit = parseInt(socket.handshake.query.scoreLimit);
     
     // check if room exists
@@ -33,20 +50,28 @@ function clientConnect(io, socket) {
         if (!games.get(room)) return;
 
         if (games.get(room).gameStarted == false && io.sockets.adapter.rooms.get(room).size < 4) {
+            // check if player is already in the room
+            for (const player of games.get(room).players.values()) {
+                if (playerId == player.id) {
+                    socket.emit('room-error', { messsage: 'Player already in the room '});
+                    return;
+                }
+            }
+
             socket.join(room);
 
             const playerNumber = io.sockets.adapter.rooms.get(room).size;
             const player = new Player(playerId, playerName, playerNumber, socket.id);
             socket.emit('player-number', playerNumber);
             games.get(room).addPlayer(player);
-            
-        } else {
-            socket.emit('room-full');
-        }
+            io.to(room).emit('player-connect', { players: games.get(room).getPlayers() });
 
-        // start game if 4 players join a room
-        if (games.get(room).players.size == 4) {
-            startNewOmiGame(io, room);
+            // start game if 4 players join a room
+            if (games.get(room).players.size == 4) {
+                startNewOmiGame(io, room);
+            }
+        } else {
+            socket.emit('room-error', { message: 'Room is full' });
         }
     } else {
         // create a new room
@@ -126,6 +151,8 @@ function newMatch(io, room, game) {
 function playCard(io, socketId, room, card) {
     const game = games.get(room);
 
+    if (!game) return;
+
     const playerNumber = getPlayerNumber(game.players, socketId);
 
     // check if player is the current player
@@ -145,13 +172,15 @@ function playCard(io, socketId, room, card) {
 function callTrump(io, socketId, room, trump) {
     const game = games.get(room);
 
+    if (!game) return;
+
     const playerNumber = getPlayerNumber(game.players, socketId);
 
     if (playerNumber == game.trumpCaller && game.trump == null) {
         const calledTrump = game.callTrump(trump);
 
         if (calledTrump) {
-            io.to(room).emit('trump-card', { trump });
+            io.to(room).emit('trump-card', { player: playerNumber, trump });
         }
     }
 }
@@ -165,9 +194,45 @@ function roundWinner(io, room, game) {
         game.addPoints(2, 1);
     }
 
+    // send current game state
+    io.to(room).emit('round-winner', {
+        roundWinner: currentRoundWinner,
+        teamOnePoints: game.teamOnePoints,
+        teamTwoPoints: game.teamTwoPoints
+    });
+
     if ((game.teamOnePoints + game.teamTwoPoints) >= 8) {
-        newMatch(io, room, game);
+        if (game.teamOnePoints > game.teamTwoPoints) {
+            game.addScore(1, 1);
+            io.to(room).emit('match-winner', { matchWinner: 'Team 1' });
+        } else if (game.teamTwoPoints > game.teamOnePoints) {
+            game.addScore(2, 1);
+            io.to(room).emit('match-winner', { matchWinner: 'Team 2' });
+        } else {
+            game.tieMatches += 1;
+            io.to(room).emit('match-winner', { matchWinner: 'Tie Match' });
+        }
+
+        // send match scores
+        io.to(room).emit('match-scores', {
+            teamOneScore: game.teamOneScore,
+            teamTwoScore: game.teamTwoScore,
+            ties: game.tieMatches
+        });
+
+        // start next match or end game
+        if (game.teamOneScore >= game.scoreLimit || game.teamTwoScore >= game.scoreLimit) {
+            endGame(io, room, game);
+        } else {
+            newMatch(io, room, game);
+        }
     }
+}
+
+function endGame(io, room, game) {
+    game.endGame();
+
+    io.to(room).emit('game-finished', { gameWinner: game.winner });
 }
 
 // helper function to get player number of socket

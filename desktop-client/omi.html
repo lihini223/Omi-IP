@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.1/socket.io.js" integrity="sha512-oFOCo2/3DtjrJG4N27BjSLQWoiBv171sK6a+JiWjp/7agxC2nCUP358AqzxkBUb5jX8g6CYLPdSKQTbC0weCwA==" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <title>Omi Multiplayer</title>
+</head>
+<body>
+    <div class="container">
+        Omi
+        <div class="table" id="table">
+            <div class="card">
+                <img id="player-1-card" alt="Player 1">
+                <div class="card-body">
+                    <h5 class="card-title">Player 1 Card</h5>
+                </div>
+            </div>
+            <div class="card">
+                <img id="player-2-card" alt="Player 2">
+                <div class="card-body">
+                    <h5 class="card-title">Player 2 Card</h5>
+                </div>
+            </div>
+            <div class="card">
+                <img id="player-3-card" alt="Player 3">
+                <div class="card-body">
+                    <h5 class="card-title">Player 3 Card</h5>
+                </div>
+            </div>
+            <div class="card">
+                <img id="player-4-card" alt="Player 4">
+                <div class="card-body">
+                    <h5 class="card-title">Player 4 Card</h5>
+                </div>
+            </div>
+        </div>
+        <div class="player-hand" id="playerHand"></div>
+        <div>
+            <h5>Trump</h5>
+            <img src="" id="trumpCard" alt="Trump" style="display: none;">
+        </div>
+        <div class="trump-call" id="trumpCall" style="display: none;"></div>
+    </div>
+
+    <script>
+        const fs = require('fs').promises;
+        const electron = require('electron');
+        const { ipcRenderer } = electron;
+        const urlString = window.location.href;
+        const url = new URL(urlString);
+        const room = url.searchParams.get('room');
+        const scoreLimit = url.searchParams.get('scoreLimit');
+
+        /*ipcRenderer.on('player-data', (err, data) => {
+            connectClient(data);
+        });*/
+
+        async function connectGame() {
+            const token = await fs.readFile('token.txt', 'utf-8');
+
+            const socket = io("http://localhost:3000", {
+                query: {
+                    token,
+                    room,
+                    scoreLimit
+                }
+            });
+
+            const table = document.querySelector('#table');
+            const playerHand = document.querySelector('#playerHand');
+            const trumpCallDiv = document.querySelector('#trumpCall');
+            const trumpCardImg = document.querySelector('#trumpCard');
+            const player1Card = document.querySelector('#player-1-card');
+            const player2Card = document.querySelector('#player-2-card');
+            const player3Card = document.querySelector('#player-3-card');
+            const player4Card = document.querySelector('#player-4-card');
+
+            let playerNumber = -1;
+
+            socket.on('room-error', data => {
+                console.log(data);
+            });
+
+            socket.on('player-disconnect', () => {
+                //window.location.replace('http://localhost:5000');
+
+                console.log('Player disconnected');
+            });
+
+            socket.on('player-number', data => {
+                playerNumber = data;
+            });
+
+            socket.on('game-started', () => {
+                console.log('Game started');
+            });
+
+            socket.on('player-hand', hand => {
+                createHand(hand);
+            });
+
+            socket.on('played-card', data => {
+                console.log(data);
+                if (data.player == playerNumber) {
+                    playCard(data);
+                }
+                tableCard(data);
+            });
+
+            socket.on('call-trump', () => {
+                trumpCallDiv.style.display = 'flex';
+                const trumps = ['S', 'H', 'C', 'D'];
+                const images = ['assets/imgs/spades.png', 'assets/imgs/hearts.png', 'assets/imgs/clubs.png', 'assets/imgs/diamonds.png'];
+
+                for (let i = 0; i < 4; i++) {
+                    const cardDiv = document.createElement('div');
+                    cardDiv.classList.add('card');
+
+                    const img = document.createElement('img');
+                    img.src = images[i];
+
+                    cardDiv.addEventListener('click', () => {
+                        socket.emit('call-trump', trumps[i]);
+                        trumpCallDiv.style.display = 'none';
+                    });
+
+                    cardDiv.appendChild(img);
+
+                    trumpCallDiv.appendChild(cardDiv);
+                }
+            });
+
+            socket.on('trump-card', data => {
+                console.log(data);
+                trumpCard(data);
+            });
+
+            socket.on('round-winner', data => {
+                console.log(data);
+                roundWinner(data);
+            });
+
+            socket.on('match-winner', data => {
+                console.log(data);
+            });
+
+            socket.on('match-scores', data => {
+                console.log(data);
+            });
+
+            socket.on('game-finished', data => {
+                console.log(data);
+            });
+
+            function createHand(hand) {
+                playerHand.innerHTML = '';
+                trumpCallDiv.style.display = 'none';
+
+                hand.forEach(card => {
+                    const cardDiv = document.createElement('div');
+                    cardDiv.classList.add('card');
+                    cardDiv.style.width = '18rem';
+                    cardDiv.setAttribute('data-card-name', card.name);
+
+                    const img = document.createElement('img');
+                    img.src = `assets/imgs/cards/${card.imageName}`;
+
+                    const cardBody = document.createElement('div');
+                    cardBody.innerText = card.imageName.split('.')[0];
+
+                    cardDiv.addEventListener('click', () => {
+                        socket.emit('play-card', card);
+                    });
+
+                    cardDiv.appendChild(img);
+                    cardDiv.appendChild(cardBody);
+
+                    playerHand.appendChild(cardDiv);
+                });
+            }
+
+            function callTrump(trump) {
+                
+            }
+
+            function playCard(data) {
+                try {
+                    const cardDiv = playerHand.querySelector(`div[data-card-name="${data.card.name}"]`);
+                    cardDiv.remove();
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+
+            function trumpCard(data) {
+                const trump = data.trump;
+
+                trumpCardImg.style.display = '';
+
+                if (trump == 'S') {
+                    trumpCardImg.src = 'assets/imgs/spades.png';
+                } else if (trump == 'H') {
+                    trumpCardImg.src = 'assets/imgs/hearts.png';
+                } else if (trump == 'C') {
+                    trumpCardImg.src = 'assets/imgs/clubs.png';
+                } else if (trump == 'D') {
+                    trumpCardImg.src = 'assets/imgs/diamonds.png';
+                }
+            }
+
+            function tableCard(data) {
+                if (data.player == 1) {
+                player1Card.src = `assets/imgs/cards/${data.card.imageName}`;
+                } else if (data.player == 2) {
+                    player2Card.src = `assets/imgs/cards/${data.card.imageName}`;
+                } else if (data.player == 3) {
+                    player3Card.src = `assets/imgs/cards/${data.card.imageName}`;
+                } else if (data.player == 4) {
+                    player4Card.src = `assets/imgs/cards/${data.card.imageName}`;
+                }
+            }
+
+            function roundWinner(data) {
+                setTimeout(clearTable, 1000);
+            }
+
+            function clearTable() {
+                player1Card.src = '';
+                player2Card.src = '';
+                player3Card.src = '';
+                player4Card.src = '';
+            }
+        }
+
+        connectGame();
+    </script>
+</body>
+</html>

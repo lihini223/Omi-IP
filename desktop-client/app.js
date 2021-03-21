@@ -1,29 +1,14 @@
 const urlString = window.location.href;
 const url = new URL(urlString);
+const playerId = url.searchParams.get('playerId');
+const playerName = url.searchParams.get('playerName');
 const room = url.searchParams.get('room');
 const scoreLimit = url.searchParams.get('scoreLimit');
 
-function getCookie() {
-    const name = 'omi-token' + '=';
-    const decodedCookie = decodeURIComponent(document.cookie);
-    const ca = decodedCookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while(c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    
-    return "";
-}
-
-
 const socket = io("http://localhost:3000", {
     query: {
-        token: getCookie(),
+        playerId,
+        playerName,
         room,
         scoreLimit
     }
@@ -40,19 +25,8 @@ const player4Card = document.querySelector('#player-4-card');
 
 let playerNumber = -1;
 
-socket.on('connection-error', data => {
-    console.log(data);
-    window.location = 'login.html';
-});
-
-// sends any errors that can occur while joining room (room full, already in the room)
 socket.on('room-error', data => {
     console.log(data);
-});
-
-// sends all the players currently in the room when a new player joins
-socket.on('player-connect', data => {
-    console.log('Player connected', data);
 });
 
 socket.on('player-disconnect', () => {
@@ -61,7 +35,6 @@ socket.on('player-disconnect', () => {
     console.log('Player disconnected');
 });
 
-// sends current players number when player joins
 socket.on('player-number', data => {
     playerNumber = data;
 });
@@ -70,12 +43,10 @@ socket.on('game-started', () => {
     console.log('Game started');
 });
 
-// sends the players cards when at the start of each match
 socket.on('player-hand', hand => {
     createHand(hand);
 });
 
-// sends the player number and card when someone plays a card
 socket.on('played-card', data => {
     console.log(data);
     if (data.player == playerNumber) {
@@ -84,29 +55,24 @@ socket.on('played-card', data => {
     tableCard(data);
 });
 
-// your turn to call trumps
 socket.on('call-trump', () => {
     trumpCallDiv.style.display = 'flex';
 });
 
-// sends the player number and trumps when someone calls trumps
 socket.on('trump-card', data => {
     console.log(data);
     trumpCard(data);
 });
 
-// sends the player who won the current round and current points (when 4 cards are on the table)
 socket.on('round-winner', data => {
     console.log(data);
     roundWinner(data);
 });
 
-// sends the winner of the current match at the end
 socket.on('match-winner', data => {
     console.log(data);
 });
 
-// sends the current scores of the players at the end of the match
 socket.on('match-scores', data => {
     console.log(data);
 });
