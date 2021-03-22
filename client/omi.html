@@ -1,18 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.1/socket.io.js" integrity="sha512-oFOCo2/3DtjrJG4N27BjSLQWoiBv171sK6a+JiWjp/7agxC2nCUP358AqzxkBUb5jX8g6CYLPdSKQTbC0weCwA==" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-    <script src="app.js" defer></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.1/socket.io.js"
+        integrity="sha512-oFOCo2/3DtjrJG4N27BjSLQWoiBv171sK6a+JiWjp/7agxC2nCUP358AqzxkBUb5jX8g6CYLPdSKQTbC0weCwA=="
+        crossorigin="anonymous"></script>
+
     <title>Omi Multiplayer</title>
+
+    <link rel="stylesheet" href="game.css">
+    <script src="app.js" defer></script>
+    <script src="game-page.js" defer></script>
+
 </head>
+
 <body>
     <div class="container">
-        Omi
+        <div class="nav-bar">
+            <ul>
+                <li><a href="#logo">[LOGO] OMI MULTIPLAYER</a></li>
+                <li style="float:right"><a href="#login">Login</a></li>
+                <li style="float:right"><a href="#sign-up">Sign up</a></li>
+                <li style="float:right" id="profile-img"><a href="#contact"><img src="assets/imgs/profile icon.png"
+                            alt=""></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="home-box">
+            <div " class=" left-side-div">
+                <div class="left-items">
+                    <h3 id="trumps-text">TRUMPS</h3>
+                    <img class="left-div-items" src="assets/imgs/diamonds.png" alt="">
+                    <img class="left-div-items team" src="assets/imgs/other team.png" alt="">
+                    <h1 class="point">2</h1>
+                    <div class="points">
+                        <div class="point-balls"></div>
+                        <div class="point-balls"></div>
+                        <div class="point-balls"></div>
+                        <div class="point-balls"></div>
+                        <div class="point-balls"></div>
+                    </div>
+                    <img class="left-div-items team" src="assets/imgs/your team.png" alt="">
+                    <h1 class="point">2</h1>
+                    <div class="points">
+                        <div class="point-balls"></div>
+                        <div class="point-balls"></div>
+                        <div class="point-balls"></div>
+                        <div class="point-balls"></div>
+                        <div class="point-balls"></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="omi-table">
+                <div class="box">
+                    <div style="transform: rotate(180deg);" class="player-1-cards" id="friend">
+                        <img style="width: 55px;" class="team-1-cards" id="" src="assets/imgs/cards/card-back-red.png"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards" id="" src="assets/imgs/cards/card-back-red.png"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards" id="" src="assets/imgs/cards/card-back-red.png"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards" id="" src="assets/imgs/cards/card-back-red.png"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards" id="" src="assets/imgs/cards/card-back-red.png"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards" id="" src="assets/imgs/cards/card-back-red.png"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards" id="" src="assets/imgs/cards/card-back-red.png"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards" id="" src="assets/imgs/cards/card-back-red.png"
+                            alt="">
+                    </div>
+                    <div class="rotate">
+                        <div style="transform: rotate(180deg);" class="player-2-cards" id="enamy-2">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                        </div>
+                        <div class="mid-table">
+
+                        </div>
+                        <div class="player-2-cards" id="enamy-1">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                            <img style="width: 55px;" class="team-2-cards" id=""
+                                src="assets/imgs/cards/card-back-red.png" alt="">
+                        </div>
+                    </div>
+                    <div class="player-1-cards">
+                        <img style="width: 55px;" class="team-1-cards card-hover" id="" src="assets/imgs/cards/S10.jpg"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards card-hover" id="" src="assets/imgs/cards/SA.jpg"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards card-hover" id="" src="assets/imgs/cards/S10.jpg"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards card-hover" id="" src="assets/imgs/cards/SA.jpg"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards card-hover" id="" src="assets/imgs/cards/S10.jpg"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards card-hover" id="" src="assets/imgs/cards/SA.jpg"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards card-hover" id="" src="assets/imgs/cards/S10.jpg"
+                            alt="">
+                        <img style="width: 55px;" class="team-1-cards card-hover" id="" src="assets/imgs/cards/SA.jpg"
+                            alt="">
+                    </div>
+                </div>
+
+                <button onclick="enamyCardMove('p1','sA')">play</button>
+
+            </div>
+            <div " class=" right-side-div">
+                <img src="assets/imgs/settings.png" alt="">
+                <div class="player">
+                    <div class="player-profile team-1">
+                        <img class="user" src="assets/imgs/user.png" alt="">
+                    </div>
+                    <div class="player-name">
+                        <span class="name-text team-1-name">player-4</span>
+                        <div class="points player-points">
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="player">
+                    <div class="player-profile team-2">
+                        <img class="user" src="assets/imgs/user.png" alt="">
+                    </div>
+                    <div class="player-name">
+                        <span class="name-text team-2-name">player-3</span>
+                        <div class="points player-points">
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="player">
+                    <div class="player-profile team-1">
+                        <img class="user" src="assets/imgs/user.png" alt="">
+                    </div>
+                    <div class="player-name">
+                        <span class="name-text team-1-name">player-2</span>
+                        <div class="points player-points">
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="player">
+                    <div class="player-profile team-2">
+                        <img class="user" src="assets/imgs/user.png" alt="">
+                    </div>
+                    <div class="player-name">
+                        <span class="name-text team-2-name">player-1</span>
+                        <div class="points player-points">
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                            <div class="point-balls"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="popups">
+        <div class="popup-inner waiting-for-trumps">Waiting for Trumps</div>
+
+        <div class="popup-inner player-connect-inner" id="playerConnectInner">Waiting for players harida</div>
+        <div class="popup-inner select-trumps" id="select-trumps-div">
+
+
+            <div class="trump-cards" id="trump-spades" onclick="callTrump('S')"></div>
+            <div class="trump-cards" id="trump-hearts" onclick="callTrump('H')"></div>
+            <div class="trump-cards" id="trump-clubs" onclick="callTrump('C')"></div>
+            <div class="trump-cards" id="trump-diamonds" onclick="callTrump('D')"></div>
+        </div>
+
+        <div class="four-trump-cards"></div>
+
+        <div class="popup-inner game-details"></div>
+
+    </div>
+
+
+
+    <!--
         <div class="table" id="table">
             <div class="card">
                 <img id="player-1-card" alt="Player 1">
@@ -70,6 +285,8 @@
                 </div>
             </div>
         </div>
+        -->
     </div>
 </body>
+
 </html>
