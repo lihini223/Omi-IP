@@ -155,8 +155,23 @@ li a {
     height: 70vh;
     width: 20vw;
 }
+.table{
+    display:flex;
+    position:absolute;
+    width: 100vw;
+    height: 100vh;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -100;
+}
 .player-1-cards{
     margin: -110px;
+    
+}
+
+#player-1-cards{
+    z-index:100;
 }
 .box{ 
     display: flex;
@@ -234,6 +249,7 @@ li a {
     display: flex;
     justify-content: center;
     align-items: center;
+    display:flex;
 }
 
 .popup-inner{
@@ -256,7 +272,7 @@ li a {
     align-items:center;
     padding: 20px;
     
-    display: flex;/***none**/
+    display: none;
 }
 
 
@@ -265,7 +281,7 @@ li a {
     color: white;
     border-radius: 20px;
     padding: 10rem;
-    display: none; /*remove*/
+    
 }
 
 .waiting-for-trumps{
@@ -296,4 +312,8 @@ li a {
     display:flex;
     position:absolute;
     bottom: 10%;
+}
+
+.mid-cards{
+    transform:rotate(-90deg);
 }
