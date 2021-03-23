@@ -1,48 +1,78 @@
-const urlString = window.location.href;
+/*const urlString = window.location.href;
 const url = new URL(urlString);
 const room = url.searchParams.get('room');
-const scoreLimit = url.searchParams.get('scoreLimit');
+const scoreLimit = url.searchParams.get('scoreLimit');*/
 
-function getCookie() {
+function getToken() {
     const name = 'omi-token' + '=';
     const decodedCookie = decodeURIComponent(document.cookie);
     const ca = decodedCookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
+    for (let i = 0; i < ca.length; i++) {
         let c = ca[i];
-        while(c.charAt(0) == ' ') {
+        while (c.charAt(0) == ' ') {
             c = c.substring(1);
         }
         if (c.indexOf(name) == 0) {
             return c.substring(name.length, c.length);
         }
     }
-    
+
+    return "";
+}
+
+function getRoom() {
+    const name = 'omi-room' + '=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            console.log(c.substring(name.length, c.length));
+            console.log(typeof c.substring(name.length, c.length));
+            return c.substring(name.length, c.length);
+        }
+    }
+
     return "";
 }
 
 
 const socket = io("http://localhost:3000", {
     query: {
-        token: getCookie(),
-        room,
-        scoreLimit
+        token: getToken(),
+        room: getRoom(),
+        scoreLimit: 10
     }
 });
 
 const table = document.querySelector('#table');
-const playerHand = document.querySelector('#playerHand');
-const trumpCallDiv = document.querySelector('#trumpCall');
+
 const trumpCardImg = document.querySelector('#trumpCard');
 const player1Card = document.querySelector('#player-1-card');
 const player2Card = document.querySelector('#player-2-card');
 const player3Card = document.querySelector('#player-3-card');
 const player4Card = document.querySelector('#player-4-card');
+const popupDiv = document.querySelector('.popups');
+const playerConnectDiv = document.querySelector('#playerConnectInner');
+const trumpCallDiv = document.querySelector('#select-trumps-div');
+const waitingForTrumps = document.querySelector(".waiting-for-trumps");
+const gameDetails = document.querySelector('.game-details');
+const fourRandomCards = document.querySelector('.four-trump-cards');
 
+let matchNumber = 1;
 let playerNumber = -1;
+let playerHand = [];
 
 socket.on('connection-error', data => {
     console.log(data);
     window.location = 'login.html';
+});
+
+socket.on('new-room', data => {
+    console.log(data);
 });
 
 // sends any errors that can occur while joining room (room full, already in the room)
@@ -52,7 +82,7 @@ socket.on('room-error', data => {
 
 // sends all the players currently in the room when a new player joins
 socket.on('player-connect', data => {
-    console.log('Player connected', data);
+    playerConnect(data);
 });
 
 socket.on('player-disconnect', () => {
@@ -67,12 +97,14 @@ socket.on('player-number', data => {
 });
 
 socket.on('game-started', () => {
-    console.log('Game started');
+    startGame();
 });
 
 // sends the players cards when at the start of each match
 socket.on('player-hand', hand => {
-    createHand(hand);
+    playerHand = hand;
+    waitingForTrumps.style.display = "flex";
+
 });
 
 // sends the player number and card when someone plays a card
@@ -87,6 +119,8 @@ socket.on('played-card', data => {
 // your turn to call trumps
 socket.on('call-trump', () => {
     trumpCallDiv.style.display = 'flex';
+    waitingForTrumps.style.display = 'none';
+    showRandomCards();
 });
 
 // sends the player number and trumps when someone calls trumps
@@ -145,6 +179,8 @@ function createHand(hand) {
 function callTrump(trump) {
     socket.emit('call-trump', trump);
     trumpCallDiv.style.display = 'none';
+    popupDiv.style.display = 'none';
+
 }
 
 function playCard(data) {
@@ -193,4 +229,39 @@ function clearTable() {
     player2Card.src = '';
     player3Card.src = '';
     player4Card.src = '';
+}
+
+function playerConnect(data) {
+    console.log(data);
+    const players = data.players;
+
+    players.forEach(player => {
+        const playerDiv = document.createElement('div');
+        playerDiv.innerHTML = `
+        <div>
+            <p><span>${player.playerNumber}.</span>${player.playerName}</p>
+        </div>
+        `;
+
+        playerConnectDiv.appendChild(playerDiv);
+    });
+}
+
+function startGame() {
+    playerConnectDiv.style.display = 'none';
+    gameDetails.style.display = 'flex';
+    gameDetails.innerText = 'Game is starting';
+    setTimeout(() => {
+        gameDetails.style.display = 'none';
+    }, 4000);
+
+
+}
+function showRandomCards() {
+    for (let i = 0; i < 4; i++) {
+        const img = document.createElement('img');
+        img.src = `assets/imgs/cards/${playerHand[i].imageName}`;
+
+        fourRandomCards.appendChild(img);
+    }
 }
