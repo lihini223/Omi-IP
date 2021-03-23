@@ -51,16 +51,22 @@ const socket = io("http://localhost:3000", {
 const table = document.querySelector('#table');
 
 const trumpCardImg = document.querySelector('#trumpCard');
-const player1Card = document.querySelector('#player-1-card');
-const player2Card = document.querySelector('#player-2-card');
-const player3Card = document.querySelector('#player-3-card');
-const player4Card = document.querySelector('#player-4-card');
+// const player1Card = document.querySelector('#player-1-card');
+// const player2Card = document.querySelector('#player-2-card');
+// const player3Card = document.querySelector('#player-3-card');
+// const player4Card = document.querySelector('#player-4-card');
 const popupDiv = document.querySelector('.popups');
 const playerConnectDiv = document.querySelector('#playerConnectInner');
 const trumpCallDiv = document.querySelector('#select-trumps-div');
 const waitingForTrumps = document.querySelector(".waiting-for-trumps");
 const gameDetails = document.querySelector('.game-details');
 const fourRandomCards = document.querySelector('.four-trump-cards');
+const currentTrump = document.querySelector('#trump-of-game');
+const player1Cards = document.querySelector("#player-1-cards");
+const playerOneMidCard = document.querySelector("#mid-card-1");
+const playerTwoMidCard = document.querySelector("#mid-card-2");
+const playerThreeMidCard = document.querySelector("#mid-card-3");
+const playerFourMidCard = document.querySelector("#mid-card-4");
 
 let matchNumber = 1;
 let playerNumber = -1;
@@ -69,10 +75,6 @@ let playerHand = [];
 socket.on('connection-error', data => {
     console.log(data);
     window.location = 'login.html';
-});
-
-socket.on('new-room', data => {
-    console.log(data);
 });
 
 // sends any errors that can occur while joining room (room full, already in the room)
@@ -103,30 +105,35 @@ socket.on('game-started', () => {
 // sends the players cards when at the start of each match
 socket.on('player-hand', hand => {
     playerHand = hand;
-    waitingForTrumps.style.display = "flex";
-
 });
 
 // sends the player number and card when someone plays a card
 socket.on('played-card', data => {
     console.log(data);
     if (data.player == playerNumber) {
-        playCard(data);
+        //playCard(data);
     }
     tableCard(data);
 });
 
 // your turn to call trumps
 socket.on('call-trump', () => {
-    trumpCallDiv.style.display = 'flex';
     waitingForTrumps.style.display = 'none';
-    showRandomCards();
+
+    setTimeout(() => {
+        trumpCallDiv.style.display = 'flex';
+        waitingForTrumps.style.display = 'none';
+        showRandomCards();
+    }, 4000);
 });
 
 // sends the player number and trumps when someone calls trumps
 socket.on('trump-card', data => {
     console.log(data);
+    waitingForTrumps.style.display = 'none';
+    popupDiv.style.display = 'none';
     trumpCard(data);
+    createHand(playerHand);
 });
 
 // sends the player who won the current round and current points (when 4 cards are on the table)
@@ -150,29 +157,20 @@ socket.on('game-finished', data => {
 });
 
 function createHand(hand) {
-    playerHand.innerHTML = '';
-    trumpCallDiv.style.display = 'none';
+    player1Cards.innerHTML = '';
 
     hand.forEach(card => {
-        const cardDiv = document.createElement('div');
-        cardDiv.classList.add('card');
-        cardDiv.style.width = '18rem';
-        cardDiv.setAttribute('data-card-name', card.name);
-
         const img = document.createElement('img');
         img.src = `assets/imgs/cards/${card.imageName}`;
+        img.classList.add('team-1-cards');
+        img.classList.add('card-hover');
+        img.style.width = '55px';
 
-        const cardBody = document.createElement('div');
-        cardBody.innerText = card.imageName.split('.')[0];
-
-        cardDiv.addEventListener('click', () => {
+        img.addEventListener('click', () => {
             socket.emit('play-card', card);
         });
 
-        cardDiv.appendChild(img);
-        cardDiv.appendChild(cardBody);
-
-        playerHand.appendChild(cardDiv);
+        player1Cards.appendChild(img);
     });
 }
 
@@ -183,52 +181,41 @@ function callTrump(trump) {
 
 }
 
-function playCard(data) {
-    try {
-        const cardDiv = playerHand.querySelector(`div[data-card-name="${data.card.name}"]`);
-        cardDiv.remove();
-    } catch (err) {
-        console.log(err);
-    }
-}
-
 function trumpCard(data) {
     const trump = data.trump;
 
-    trumpCardImg.style.display = '';
-
     if (trump == 'S') {
-        trumpCardImg.src = 'assets/imgs/spades.png';
+        currentTrump.src = 'assets/imgs/spades.png';
     } else if (trump == 'H') {
-        trumpCardImg.src = 'assets/imgs/hearts.png';
+        currentTrump.src = 'assets/imgs/hearts.png';
     } else if (trump == 'C') {
-        trumpCardImg.src = 'assets/imgs/clubs.png';
+        currentTrump.src = 'assets/imgs/clubs.png';
     } else if (trump == 'D') {
-        trumpCardImg.src = 'assets/imgs/diamonds.png';
+        currentTrump.src = 'assets/imgs/diamonds.png';
     }
 }
 
 function tableCard(data) {
     if (data.player == 1) {
-        player1Card.src = `assets/imgs/cards/${data.card.imageName}`;
+        playerOneMidCard.src = `assets/imgs/cards/${data.card.imageName}`;
     } else if (data.player == 2) {
-        player2Card.src = `assets/imgs/cards/${data.card.imageName}`;
+        playerTwoMidCard.src = `assets/imgs/cards/${data.card.imageName}`;
     } else if (data.player == 3) {
-        player3Card.src = `assets/imgs/cards/${data.card.imageName}`;
+        playerThreeMidCard.src = `assets/imgs/cards/${data.card.imageName}`;
     } else if (data.player == 4) {
-        player4Card.src = `assets/imgs/cards/${data.card.imageName}`;
+        playerFourMidCard.src = `assets/imgs/cards/${data.card.imageName}`;
     }
 }
 
 function roundWinner(data) {
-    setTimeout(clearTable, 1000);
+    setTimeout(clearTable, 2000);
 }
 
 function clearTable() {
-    player1Card.src = '';
-    player2Card.src = '';
-    player3Card.src = '';
-    player4Card.src = '';
+    playerOneMidCard.src = '';
+    playerTwoMidCard.src = '';
+    playerThreeMidCard.src = '';
+    playerFourMidCard.src = '';
 }
 
 function playerConnect(data) {
@@ -248,16 +235,19 @@ function playerConnect(data) {
 }
 
 function startGame() {
+    waitingForTrumps.style.display = 'none';
     playerConnectDiv.style.display = 'none';
     gameDetails.style.display = 'flex';
     gameDetails.innerText = 'Game is starting';
     setTimeout(() => {
         gameDetails.style.display = 'none';
-    }, 4000);
+        waitingForTrumps.style.display = 'flex';
+    }, 2000);
 
 
 }
 function showRandomCards() {
+    fourRandomCards.innerHTML = '';
     for (let i = 0; i < 4; i++) {
         const img = document.createElement('img');
         img.src = `assets/imgs/cards/${playerHand[i].imageName}`;
