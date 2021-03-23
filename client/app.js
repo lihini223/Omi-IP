@@ -1,9 +1,9 @@
-const urlString = window.location.href;
+/*const urlString = window.location.href;
 const url = new URL(urlString);
 const room = url.searchParams.get('room');
-const scoreLimit = url.searchParams.get('scoreLimit');
+const scoreLimit = url.searchParams.get('scoreLimit');*/
 
-function getCookie() {
+function getToken() {
     const name = 'omi-token' + '=';
     const decodedCookie = decodeURIComponent(document.cookie);
     const ca = decodedCookie.split(';');
@@ -20,12 +20,31 @@ function getCookie() {
     return "";
 }
 
+function getRoom() {
+    const name = 'omi-room' + '=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            console.log(c.substring(name.length, c.length));
+            console.log(typeof c.substring(name.length, c.length));
+            return c.substring(name.length, c.length);
+        }
+    }
+
+    return "";
+}
+
 
 const socket = io("http://localhost:3000", {
     query: {
-        token: getCookie(),
-        room,
-        scoreLimit
+        token: getToken(),
+        room: getRoom(),
+        scoreLimit: 10
     }
 });
 
@@ -42,7 +61,6 @@ const trumpCallDiv = document.querySelector('#select-trumps-div');
 const waitingForTrumps = document.querySelector(".waiting-for-trumps");
 const gameDetails = document.querySelector('.game-details');
 const fourRandomCards = document.querySelector('.four-trump-cards');
-console.log(fourRandomCards)
 
 let matchNumber = 1;
 let playerNumber = -1;
@@ -51,6 +69,10 @@ let playerHand = [];
 socket.on('connection-error', data => {
     console.log(data);
     window.location = 'login.html';
+});
+
+socket.on('new-room', data => {
+    console.log(data);
 });
 
 // sends any errors that can occur while joining room (room full, already in the room)

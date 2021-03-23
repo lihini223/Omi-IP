@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { nanoid } = require('nanoid');
 
 const User = require('../models/User');
 const { validateSocket } = require('../config/auth');
@@ -42,7 +43,7 @@ function clientConnect(io, socket, user) {
     const playerId = user._id;
     const playerName = user.username;
 
-    const room = socket.handshake.query.room;
+    let room = socket.handshake.query.room;
     let scoreLimit = parseInt(socket.handshake.query.scoreLimit);
     
     // check if room exists
@@ -75,6 +76,8 @@ function clientConnect(io, socket, user) {
         }
     } else {
         // create a new room
+        room = nanoid(5);
+        socket.emit('new-room', { roomId: room });
         socket.join(room);
 
         if (!scoreLimit || isNaN(scoreLimit) || scoreLimit < 2 || scoreLimit > 10) {
@@ -88,6 +91,7 @@ function clientConnect(io, socket, user) {
         const player = new Player(playerId, playerName, 1, socket.id);
         socket.emit('player-number', 1);
         games.get(room).addPlayer(player);
+        io.to(room).emit('player-connect', { players: games.get(room).getPlayers() });
     }
 
     socket.on('play-card', card => {
