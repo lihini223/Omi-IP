@@ -82,6 +82,10 @@ socket.on('room-error', data => {
     console.log(data);
 });
 
+socket.on('new-room', data => {
+    console.log(data);
+});
+
 // sends all the players currently in the room when a new player joins
 socket.on('player-connect', data => {
     playerConnect(data);

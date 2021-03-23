@@ -75,23 +75,27 @@ function clientConnect(io, socket, user) {
             socket.emit('room-error', { message: 'Room is full' });
         }
     } else {
-        // create a new room
-        room = nanoid(5);
-        socket.emit('new-room', { roomId: room });
-        socket.join(room);
+        // create a new room if no room id is sent
+        if (room == '') {
+            room = nanoid(5);
+            socket.emit('new-room', { roomId: room });
+            socket.join(room);
 
-        if (!scoreLimit || isNaN(scoreLimit) || scoreLimit < 2 || scoreLimit > 10) {
-            scoreLimit = 10;
+            if (!scoreLimit || isNaN(scoreLimit) || scoreLimit < 2 || scoreLimit > 10) {
+                scoreLimit = 10;
+            }
+
+            // create a new omi game and add to games list
+            games.set(room, new OmiGame(room, scoreLimit));
+
+            // first player will be player 1
+            const player = new Player(playerId, playerName, 1, socket.id);
+            socket.emit('player-number', 1);
+            games.get(room).addPlayer(player);
+            io.to(room).emit('player-connect', { players: games.get(room).getPlayers() });
+        } else {
+            socket.emit('room-error', { message: 'Invalid room ID' });
         }
-
-        // create a new omi game and add to games list
-        games.set(room, new OmiGame(room, scoreLimit));
-
-        // first player will be player 1
-        const player = new Player(playerId, playerName, 1, socket.id);
-        socket.emit('player-number', 1);
-        games.get(room).addPlayer(player);
-        io.to(room).emit('player-connect', { players: games.get(room).getPlayers() });
     }
 
     socket.on('play-card', card => {
