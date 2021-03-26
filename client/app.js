@@ -67,10 +67,17 @@ const playerOneMidCard = document.querySelector("#mid-card-1");
 const playerTwoMidCard = document.querySelector("#mid-card-2");
 const playerThreeMidCard = document.querySelector("#mid-card-3");
 const playerFourMidCard = document.querySelector("#mid-card-4");
+const player1Name = document.querySelector("#player-1-name");
+const player2Name = document.querySelector("#player-2-name");
+const player3Name = document.querySelector("#player-3-name");
+const player4Name = document.querySelector("#player-4-name");
+
 
 let matchNumber = 1;
 let playerNumber = -1;
 let playerHand = [];
+let matchPlayers = [];
+let firstCard = null;
 
 socket.on('connection-error', data => {
     console.log(data);
@@ -89,6 +96,10 @@ socket.on('new-room', data => {
 // sends all the players currently in the room when a new player joins
 socket.on('player-connect', data => {
     playerConnect(data);
+
+    if (data.players.length == 4) {
+        matchPlayers = data.players;
+    }
 });
 
 socket.on('player-disconnect', () => {
@@ -113,6 +124,9 @@ socket.on('player-hand', hand => {
 
 // sends the player number and card when someone plays a card
 socket.on('played-card', data => {
+    if (firstCard == null) {
+        firstCard = data.card;
+    }
     console.log(data);
     if (data.player == playerNumber) {
         //playCard(data);
@@ -166,16 +180,37 @@ function createHand(hand) {
     hand.forEach(card => {
         const img = document.createElement('img');
         img.src = `assets/imgs/cards/${card.imageName}`;
-        img.classList.add('team-1-cards');
-        img.classList.add('card-hover');
-        img.style.width = '55px';
+
+
 
         img.addEventListener('click', () => {
-            socket.emit('play-card', card);
+            if (validateCard(card)) {
+                socket.emit('play-card', card);
+                playerCardMove(img, card);
+            } else {
+                invalidCard(img);
+
+            }
         });
 
         player1Cards.appendChild(img);
     });
+}
+
+function validateCard(card) {
+    if (firstCard == null) return true;
+
+    const playedCardSymbol = card.name[0];
+
+    if (firstCard.name[0] == playedCardSymbol) return true;
+
+    for (let i = 0; i < playerHand.length; i++) {
+        if (firstCard.name[0] == playerHand[i].name[0]) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 function callTrump(trump) {
@@ -213,6 +248,7 @@ function tableCard(data) {
 
 function roundWinner(data) {
     setTimeout(clearTable, 2000);
+    firstCard = null;
 }
 
 function clearTable() {
@@ -230,7 +266,7 @@ function playerConnect(data) {
         const playerDiv = document.createElement('div');
         playerDiv.innerHTML = `
         <div>
-            <p><span>${player.playerNumber}.</span>${player.playerName}</p>
+            <p><br><span>${player.playerNumber}.</span>${player.playerName}</p>
         </div>
         `;
 
@@ -248,6 +284,11 @@ function startGame() {
         waitingForTrumps.style.display = 'flex';
     }, 2000);
 
+    player1Name.innerText = matchPlayers[0].playerName;
+    player2Name.innerText = matchPlayers[1].playerName;
+    player3Name.innerText = matchPlayers[2].playerName;
+    player4Name.innerText = matchPlayers[3].playerName;
+    console.log(matchPlayers[0].playerName);
 
 }
 function showRandomCards() {
@@ -258,4 +299,40 @@ function showRandomCards() {
 
         fourRandomCards.appendChild(img);
     }
+}
+
+function playerCardMove(img, card) {
+    let rect = img.getBoundingClientRect();
+
+
+    var bodyRect = document.body.getBoundingClientRect();
+    console.log(rect);
+    let middleOfScreen = bodyRect.width / 2;
+    let offSet = middleOfScreen - rect.x;
+
+
+    img.style.transition = "transform 0.5s ease";
+
+
+    img.style.transform = `translate(${offSet}px,-150%) 
+                            translateX(-50%) 
+                            rotate(${offSet > 0 ? '-' : ''}180deg)`;
+
+    console.log(playerHand);
+    for (let i = 0; i < playerHand.length; i++) {
+        if (card.name == playerHand[i].name) {
+            playerHand.pop(i);
+            break;
+        }
+    }
+    console.log(playerHand);
+
+    setTimeout(() => {
+        img.remove();
+    }, 1000);
+
+}
+
+function invalidCard(img) {
+    img.style.animation = "invalid-move 800ms ease";
 }

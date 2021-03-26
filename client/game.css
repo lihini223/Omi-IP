@@ -1,244 +1,313 @@
-body{
-    margin: 0;
-    font-family: 'Source Code Pro', monospace;
-}
-/* ----------------------- nav-bar ----------------------- */
-ul {
-   list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.63);
-}
-  
-li {
-  float: left;
-}
-  
-li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
 }
 
-.container {
-    background-image: url("assets/imgs/game-page/bgImgGamePage.png");
-    background-size: cover;
+body {
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
-#profile-img{
-    margin-top: -5px;
-}
-
-/* ----------------------- body ----------------------- */
-.home-box{
-    /* border: 2px solid red; */
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
+nav{
     width: 100%;
-}
-.left-side-div{
-    /* border: 2px solid red; */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 89vh;
-    width: 20vw;
-}
-.left-items{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: -100px;
-}
-.table{
-    /* border: 2px solid red; */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 89vh;
-    width: 60vw;
-}
-.right-side-div{
-    /* border: 2px solid red; */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 89vh;
-    width: 20vw;
+    height: 8%;
+    background-color:black;
+    color: white;
 }
 
-#trumps-text{
-    margin-bottom: -5px;
-    color: seashell;
+.container{
+    width: 100%;
+    height: 100%;
+    background-image:url("assets/imgs/game-page/bgImageDarkOver.png");
+    font-family: 'Source Code Pro', monospace;
+    color: white;
 }
 
-.points{
-    /* border: 2px solid red; */
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 15px;
-}
-
-.point-balls{
-    width: 15px;
-    height: 15px;
-    background-color: rgba(0, 0, 0, 0.486);
-    margin-left: 5px;
-    border-radius: 50px;
-}
-
-.team{
-    margin-bottom: -20px;
-}
-.player{
-    display: flex;
-    flex-direction: row;
-    margin-top: 30px;
-
-}
-.player-profile{
-    border: 2px solid seashell;
-    border-radius: 50px;
-    width: 60px;
-    height: 60px;
+.game-container{
+    width: 100%;
+    height:100%;
+    /* background-image: url("assets/imgs/game-page/bgImgGamePage.png"); */
     
 }
-.team-1{
-    box-shadow: 0px 5px 10px #00FF9F;
-}
-.team-2{
-    box-shadow: 0px 5px 10px #eeff00;
-}
-.user{
-    width: 60px;
-    height: 60px;
-}
-.name-text{
-    /* border: 2px solid red; */
-    margin-left: 20px;
-    color: seashell;
-}
-.team-1-name{
-    text-shadow: 0px 3px 5px #00FF9F;
-}
-.team-2-name{
-    text-shadow: 0px 3px 5px #FF00FF;
-}
-.player-points{
-    margin-top: 20px;
-}
-/* --------------cards table-------------- */
-.omi-table{
-    /* border: 2px solid green; */
+
+.top{
+    height: 15%;
+    /* background-color: yellow; */
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    /* border: 2px solid red; */
-    height: 90vh;
 }
-.mid-table{
-    /* border: 2px solid blue; */
-    height: 70vh;
-    width: 20vw;
+.middle{
+    height: 57%;
+    /* background-color:white; */
+    display: flex;
 }
-.table{
+
+.middle > div {
+    height: 100%;
+}
+
+.bottom{
+    display: flex;
+    height: 20%;
+    /* background-color:green; */
+}
+
+.mid-left {
+    width: 35%;
+    /* background: red; */
+    display: flex;
+}
+
+.table {
+    width: 30%;
+    /* background: purple; */
+}
+
+.mid-right {
+   width: 35%;
+   display: flex;
+    
+}
+.middle-right-card{
+    width: 25%;
+    height: 100%;
+    /* background: red; */
+}
+.middle-right-score{
+    width: 75%;
+    height: 100%;
+    /* background: goldenrod; */
     display:flex;
-    position:absolute;
-    width: 100vw;
-    height: 100vh;
-    top:50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: -100;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
 }
-.player-1-cards{
-    margin: -110px;
-    
+.middle-left-score{
+    width: 75%;
+    height: 100%;
+    /* background: goldenrod; */
 }
-
-#player-1-cards{
-    z-index:100;
-}
-.box{ 
+.middle-left-card,.middle-right-card{
+    width:25%;
+    height: 100%;
+    /* background: blue; */
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    /* border: 2px solid red; */
-    height: 90vh;
-    width: 70vw;
+    align-items: center;
+    
 }
-.rotate{
+.middle-left-card img,.middle-right-card img{
+    transform: rotate(90deg) scale(0.6) ;
+    margin-top: -90px;
+    
+    height: 33%;
+    box-shadow: 0 3px 16px rgba(0, 0, 0, 0.637);
+
+}
+
+.team-cards{
+    width: 60%;
+    height: 100%;
+    margin: 0 auto;
+    /* background: grey; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.team-cards img{
+    height: 83%;
+    margin-left: -20px;
+    box-shadow: 0 3px 16px rgba(0, 0, 0, 0.507);
+    transition:transform 500ms ease;
+}
+#player-1-cards img:hover{
+    transform:scale(1.2) translateY(-20%);
+    box-shadow: 0 0 16px rgba(255, 255, 240, 0.623);
+    border-radius: 5px;
+}
+
+.team-cards img:nth-child(1){
+    margin-left:0;
+}
+
+.middle-left-card img:nth-child(1),.middle-right-card img:nth-child(1) {
+    margin-top: 0;
+}
+
+.player-name-card{
+    width: 80%;
+    height: 20%;
+    /* background-color: greenyellow; */
+    margin-bottom: 10px;
+    display: flex;
+}
+
+.profile-image {
+    width: 40%;
+    height: 100%;
+}
+
+.profile-image img{
+    height: 100%;
+}
+
+.player-name-and-score{
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    /* border: 2px solid red; */
-    transform: rotate(90deg);
+    margin-left: 20px;
 }
-.team-1-cards{
-    margin-left: -20px;
-    border-radius: 5px;
-}
-.team-2-cards{
-    margin-left: -20px;
-    border-radius: 5px;
-}
-.card-hover:hover{
-    cursor: pointer;
-    transition: 0.5s;
-    transform: translateY(-20px);
+.player-name{
+    margin-bottom:8px;
 }
 
-/* @media only screen and (max-width: 800px){
-    .home-box{
-        display: none;
-    }
-} */
-
-/* Trump Cards Select */
-#trump-spades{
-    background-image:url("assets/imgs/spades.png");
-}
-#trump-hearts{
-    background-image:url("assets/imgs/hearts.png");
-}
-#trump-clubs{
-    background-image:url("assets/imgs/clubs.png");
-}
-#trump-diamonds{
-    background-image:url("assets/imgs/diamonds.png");
-}
-.trump-cards{
-
-    width: 100px;
-    height: 100px;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    transition:transform 400ms ease;
+.current-trump{
+    width: 20%;
+    /* background-color: chocolate; */
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items:center;
     
-
 }
-.trump-cards:hover{
+.settings-icon{
+    width: 20%;
+    /* background-color: chocolate; */
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items:center;
+    /*transform:translateX(-50%);*/
+    
+}
+.settings-icon img{
+    transition:transform 500ms ease;
+}
+.settings-icon img:hover{
+
     transform:scale(1.1);
+}
+.team-score{
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items:center;
+    /* background-color:chocolate; */
+    width: 80%;
+    height:40%;
+    margin-bottom:10px;
+}
+.team-score-count{
+    font-size: 1.4rem;
+    transform:translateY(-40%);
+    
     
 }
+.count-purple-border{
+    -webkit-text-stroke: 1px #FF00FF;
+    animation:border-text-glow 1000ms ease infinite;
+}
+.count-green-border{
+    -webkit-text-stroke: 1px #00FF9F;
+    animation:border-text-glow 1000ms ease infinite;
+}
 
-/*******************************************************/
+.middle-left-score{
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    justify-content:center;
+}
+.dot{
+    
+    height: 20px;
+    width: 20px;
+    border-radius:50%;
+    margin-left: 8px;
+    
+}
+.green-dot{
+    background-color: #00FF9F;
+    box-shadow:0 3px 6px #00631A;
+}
+.{
+
+}
+.purple-dot{
+    background-color: #FF00FF;
+    box-shadow:0 3px 6px #A70000;
+}
+.team-score-dots{
+    display:flex;
+    
+}
+.player-1-name-drop-shadow{
+    text-shadow:0 3px 6px #FF00FF;
+    animation:player-name-glow-enemy 2000ms ease infinite;
+}
+.player-3-name-drop-shadow{
+    text-shadow:0 3px 6px #00631A;
+    animation:player-name-glow-player 2000ms ease infinite;
+}
+.player-1-drop-shadow{
+    border-radius: 50%;
+    box-shadow:0 3px 6px #00FFA8;
+    animation: glow-blue 4000ms infinite ease;
+
+}
+.player-2-drop-shadow{
+    border-radius: 50%;
+    box-shadow:0 3px 6px #FFD500;
+    animation: glow-yellow 4000ms infinite ease;
+}
+.player-3-drop-shadow{
+    border-radius: 50%;
+    box-shadow:0 3px 6px #00FFE5;
+    animation: glow-blue 4000ms infinite ease;
+}
+.player-4-drop-shadow{
+    border-radius: 50%;
+    box-shadow:0 3px 6px #FFD500;
+    animation: glow-yellow 4000ms ease-in-out infinite ;
+}
+.trump{
+    
+    text-shadow: 0 3px 6px #FFD500;;
+}
+#trump-of-game{
+    width: 18%;
+}
+.show-prev-4{
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    /* background-color: cornflowerblue; */
+}
+.show-prev-4 img{
+    transition:transform 500ms ease; 
+}
+.show-prev-4 img:hover{
+    transform:scale(1.1);
+}
+.balance-bottom{
+    width: 20%;
+}
+.settings-icon-img{
+    box-shadow: 0 2px 6px rgba(255, 0, 0,0.52);
+    border-radius:50%;
+}
+
+.test-dot{
+    
+    animation:add-new-dot 3000ms ease infinite ;
+}
+
+/*************************/
 .popups {
     position: absolute;
     top: 0;
@@ -249,7 +318,31 @@ li a {
     display: flex;
     justify-content: center;
     align-items: center;
-    display:flex;
+    display:flex;/**flex**/
+    /* z-index: 100; */
+    animation:fade-in 1000ms ease;
+}
+.mid-cards {
+    width: 75px;
+}
+
+@keyframes  fade-in{
+    from{
+        opacity:0;
+    }to{
+        opacity:1;
+    }
+}
+
+@keyframes to-max-width{
+    from{
+        transform:scale(0.8) translate(-50%, -50%);
+        
+
+    }
+    to{
+        transform:scale(1) translate(-50%, -50%);
+    }
 }
 
 .popup-inner{
@@ -263,16 +356,23 @@ li a {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    animation: to-max-width 1000ms ease;
 }
-
 .select-trumps{
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;;
+}
+.trump-cards-symbols{
     height:20%;
-    width:40%;    
+    width:100%;    
     justify-content:space-between;
     align-items:center;
     padding: 20px;
     
-    display: none;
+    display: flex;
 }
 
 
@@ -283,6 +383,8 @@ li a {
     padding: 10rem;
     
 }
+
+
 
 .waiting-for-trumps{
     color: white;
@@ -311,9 +413,149 @@ li a {
 .four-trump-cards{
     display:flex;
     position:absolute;
+    
     bottom: 10%;
+    animation:slide-in-bottom 1000ms ease;
+
 }
 
-.mid-cards{
-    transform:rotate(-90deg);
+@keyframes slide-in-bottom{
+    from{
+        bottom: 0;
+        opacity: 0;
+        
+        
+        
+    }to{
+        bottom: 10%;
+        opacity: 1;
+        
+        
+        
+    }
+}
+.four-trump-cards img{
+    width: 100px;
+    margin-left: 10px;
+    box-shadow:0 0 8px rgba(251, 255, 17, 0.664);
+    border-radius: 6px;;
+}
+.four-trump-cards img:nth-child(1){
+    margin-left:0;
+}
+
+.trump-cards{
+
+    width: 100px;
+    height: 100px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    transition:transform 400ms ease;
+    
+
+}
+.trump-cards:hover{
+    transform:scale(1.1);
+    
+}
+
+#trump-spades{
+    background-image:url("assets/imgs/spades.png");
+}
+#trump-hearts{
+    background-image:url("assets/imgs/hearts.png");
+}
+#trump-clubs{
+    background-image:url("assets/imgs/clubs.png");
+}
+#trump-diamonds{
+    background-image:url("assets/imgs/diamonds.png");
+}
+/**************************/
+
+@keyframes add-new-dot{
+    0%{
+        transform:scale(0);
+    }
+    50%{
+        transform:scale(1);
+    }100%{
+        transform:scale(0);
+    }
+}
+
+@keyframes glow-yellow{
+    0%{
+        box-shadow: 0 3px 6px #FFD500;
+    }
+    50%{
+        box-shadow: 0 3px 16px #FFD500;
+    }100%{
+        box-shadow: 0 3px 6px #FFD500;
+    }
+}
+
+@keyframes glow-blue{
+    0%{
+        box-shadow: 0 3px 6px #00FFE5 ;
+    }
+    50%{
+        box-shadow: 0 3px 16px #00FFE5 ;
+    }100%{
+        box-shadow: 0 3px 6px #00FFE5 ;
+    }
+}
+
+@keyframes player-name-glow-player{
+    0%{
+        text-shadow: 0 3px 6px #00FF9F;
+    }
+    50%{
+        text-shadow: 0 3px 16px #00FF9F;
+    }100%{
+        text-shadow: 0 3px 6px #00FF9F;
+    }
+}
+@keyframes player-name-glow-enemy{
+    0%{
+        text-shadow: 0 3px 6px #FF00FF;
+    }
+    50%{
+        text-shadow: 0 3px 16px #FF00FF;
+    }100%{
+        text-shadow: 0 3px 6px #FF00FF;
+    }
+}
+
+@keyframes border-text-glow{
+    0%{
+        -webkit-text-stroke: 0px #FF00FF;
+    }50%{
+        -webkit-text-stroke: 2px #FF00FF;
+    }100%{
+        -webkit-text-stroke: 0px #FF00FF;
+    }
+}
+
+@keyframes invalid-move{
+    0%{
+        box-shadow: 0 0 6px red;
+        transform:rotate(0);
+    }
+    25%{
+        box-shadow: 0 0 16px red;
+        transform:rotate(5deg);
+    }
+    50%{
+        box-shadow: 0 0 6px red;
+        
+    }
+    75%{
+        box-shadow: 0 0 16px red;
+        transform:rotate(-5deg);
+    }
+    100%{
+        box-shadow: 0 0 0px red;
+        transform:rotate(0);
+    }
 }
