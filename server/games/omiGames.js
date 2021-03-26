@@ -1,28 +1,49 @@
+const jwt = require('jsonwebtoken');
+const { nanoid } = require('nanoid');
+
+const User = require('../models/User');
 const { validateSocket } = require('../config/auth');
 
-const Player = require('./omi/Player');
 const OmiGame = require('./omi/OmiGame');
+const Player = require('./omi/Player');
 
 const games = new Map();
 
 module.exports = (io) => {
     // validate socket connection before connecting client to games
-    io.use((socket, next) => {
+    /*io.use((socket, next) => {
         if (validateSocket(socket)) {
             return next();
         }
 
         return next(new Error('Error authenticating user.'));
-    });
+    });*/
 
-    io.on('connection', socket => {
-        clientConnect(io, socket);
+    io.on('connection', async (socket) => {
+        try {
+            if (validateSocket(socket)) {
+                const userTokenData = jwt.verify(socket.handshake.query.token, process.env.JWT_TOKEN);
+
+                const user = await User.findOne({ _id: userTokenData.dbId });
+            
+                if (user.username == userTokenData.username) {
+                    clientConnect(io, socket, user);
+                }
+            } else {
+                socket.emit('connection-error', { error: 'Invalid token' });
+            }
+        } catch (err) {
+            socket.emit('connection-error', { error: 'Connection error' });
+            console.log(err);
+        }
     });
 }
 
-function clientConnect(io, socket) {
-    const room = socket.handshake.query.room;
-    const { playerId, playerName } = socket.handshake.query;
+function clientConnect(io, socket, user) {
+    const playerId = user._id;
+    const playerName = user.username;
+
+    let room = socket.handshake.query.room;
     let scoreLimit = parseInt(socket.handshake.query.scoreLimit);
     
     // check if room exists
@@ -44,29 +65,37 @@ function clientConnect(io, socket) {
             const player = new Player(playerId, playerName, playerNumber, socket.id);
             socket.emit('player-number', playerNumber);
             games.get(room).addPlayer(player);
+            io.to(room).emit('player-connect', { players: games.get(room).getPlayers() });
+
+            // start game if 4 players join a room
+            if (games.get(room).players.size == 4) {
+                startNewOmiGame(io, room);
+            }
         } else {
             socket.emit('room-error', { message: 'Room is full' });
         }
-
-        // start game if 4 players join a room
-        if (games.get(room).players.size == 4) {
-            startNewOmiGame(io, room);
-        }
     } else {
-        // create a new room
-        socket.join(room);
+        // create a new room if no room id is sent
+        if (room == '') {
+            room = nanoid(5);
+            socket.emit('new-room', { roomId: room });
+            socket.join(room);
 
-        if (!scoreLimit || isNaN(scoreLimit) || scoreLimit < 2 || scoreLimit > 10) {
-            scoreLimit = 10;
+            if (!scoreLimit || isNaN(scoreLimit) || scoreLimit < 2 || scoreLimit > 10) {
+                scoreLimit = 10;
+            }
+
+            // create a new omi game and add to games list
+            games.set(room, new OmiGame(room, scoreLimit));
+
+            // first player will be player 1
+            const player = new Player(playerId, playerName, 1, socket.id);
+            socket.emit('player-number', 1);
+            games.get(room).addPlayer(player);
+            io.to(room).emit('player-connect', { players: games.get(room).getPlayers() });
+        } else {
+            socket.emit('room-error', { message: 'Invalid room ID' });
         }
-
-        // create a new omi game and add to games list
-        games.set(room, new OmiGame(room, scoreLimit));
-
-        // first player will be player 1
-        const player = new Player(playerId, playerName, 1, socket.id);
-        socket.emit('player-number', 1);
-        games.get(room).addPlayer(player);
     }
 
     socket.on('play-card', card => {
@@ -130,6 +159,8 @@ function newMatch(io, room, game) {
 function playCard(io, socketId, room, card) {
     const game = games.get(room);
 
+    if (!game) return;
+
     const playerNumber = getPlayerNumber(game.players, socketId);
 
     // check if player is the current player
@@ -148,6 +179,8 @@ function playCard(io, socketId, room, card) {
 
 function callTrump(io, socketId, room, trump) {
     const game = games.get(room);
+
+    if (!game) return;
 
     const playerNumber = getPlayerNumber(game.players, socketId);
 

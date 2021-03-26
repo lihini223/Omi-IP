@@ -27,6 +27,18 @@ class OmiGame {
         this.players.set(playerNumber, player);
     }
 
+    getPlayers() {
+        const players = [];
+        this.players.forEach(player => {
+            players.push({
+                playerName: player.name,
+                playerNumber: player.playerNumber
+            });
+        });
+
+        return players;
+    }
+
     startGame() {
         this.gameStarted = true;
         this.matchNumber = 1;
@@ -56,15 +68,15 @@ class OmiGame {
         this.deck.shuffle();
 
         // deal 8 cards to each player
-        for (let i = 1; i <= 4; i++) {
-            this.players.get(i).hand.clear();
+        this.players.forEach(player => {
+            player.hand.clear();
 
-            for (let j = 0; j < 8; j++) {
+            for (let i = 0; i < 8; i++) {
                 const card = this.deck.deal();
-                this.players.get(i).hand.set(card.name, card);
+                player.hand.set(card.name, card);
             }
-            this.players.get(i).initializePlayer();
-        }
+            player.initializePlayer();
+        });
     }
 
     playCard(card) {
