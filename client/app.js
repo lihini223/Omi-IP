@@ -71,6 +71,9 @@ const player1Name = document.querySelector("#player-1-name");
 const player2Name = document.querySelector("#player-2-name");
 const player3Name = document.querySelector("#player-3-name");
 const player4Name = document.querySelector("#player-4-name");
+const opponent1Hand = document.querySelector("#opponent-1-hand");
+const opponent2Hand = document.querySelector("#opponent-2-hand");
+const teammateHand = document.querySelector("#teammate-hand");
 
 
 let matchNumber = 1;
@@ -78,6 +81,7 @@ let playerNumber = -1;
 let playerHand = [];
 let matchPlayers = [];
 let firstCard = null;
+let currentPlayer = 1;
 
 socket.on('connection-error', data => {
     console.log(data);
@@ -111,6 +115,7 @@ socket.on('player-disconnect', () => {
 // sends current players number when player joins
 socket.on('player-number', data => {
     playerNumber = data;
+    console.log(data);
 });
 
 socket.on('game-started', () => {
@@ -120,10 +125,16 @@ socket.on('game-started', () => {
 // sends the players cards when at the start of each match
 socket.on('player-hand', hand => {
     playerHand = hand;
+
+    createHands();
 });
 
 // sends the player number and card when someone plays a card
 socket.on('played-card', data => {
+    currentPlayer = data.player + 1;
+    if (currentPlayer > 4) {
+        currentPlayer = 1;
+    }
     if (firstCard == null) {
         firstCard = data.card;
     }
@@ -132,6 +143,7 @@ socket.on('played-card', data => {
         //playCard(data);
     }
     tableCard(data);
+    otherCardMove(1, 'S10');
 });
 
 // your turn to call trumps
@@ -148,6 +160,7 @@ socket.on('call-trump', () => {
 // sends the player number and trumps when someone calls trumps
 socket.on('trump-card', data => {
     console.log(data);
+    currentPlayer = data.player;
     waitingForTrumps.style.display = 'none';
     popupDiv.style.display = 'none';
     trumpCard(data);
@@ -156,6 +169,7 @@ socket.on('trump-card', data => {
 
 // sends the player who won the current round and current points (when 4 cards are on the table)
 socket.on('round-winner', data => {
+    currentPlayer = data.roundWinner;
     console.log(data);
     roundWinner(data);
 });
@@ -181,16 +195,21 @@ function createHand(hand) {
         const img = document.createElement('img');
         img.src = `assets/imgs/cards/${card.imageName}`;
 
-
-
         img.addEventListener('click', () => {
-            if (validateCard(card)) {
-                socket.emit('play-card', card);
-                playerCardMove(img, card);
-            } else {
-                invalidCard(img);
 
+            if (playerNumber == currentPlayer) {
+                if (validateCard(card)) {
+                    socket.emit('play-card', card);
+                    playerCardMove(img, card);
+                } else {
+                    invalidCard(img);
+                }
             }
+            else {
+                invalidCard(img);
+            }
+
+
         });
 
         player1Cards.appendChild(img);
@@ -335,4 +354,47 @@ function playerCardMove(img, card) {
 
 function invalidCard(img) {
     img.style.animation = "invalid-move 800ms ease";
+
+    setTimeout(() => {
+        img.style.animation = "none";
+    }, 800)
+}
+
+
+function otherCardMove(player, card) {
+
+    let playerCard;
+    let cardNumber = card;
+    if (player == 1) {
+        playerCard = teammateHand.children[Math.floor(Math.random() * teammateHand.children.length)]
+    } else if (player == 2) {
+        playerCard = opponent1Hand.children[Math.floor(Math.random() * opponent1Hand.children.length)]
+    } else if (player == 3) {
+        playerCard = opponent2Hand.children[Math.floor(Math.random() * opponent2Hand.children.length)]
+    }
+
+    playerCard.style.transition = "transform 0.5s linear 0s";
+    playerCard.style.transform = "translatey(-200%) rotatey(180deg)";
+    setTimeout(() => {
+        playerCard.style.content = "url(assets/imgs/cards/" + cardNumber + ".jpg)";
+    }, 250);
+
+}
+
+function createHands() {
+
+    for (let i = 0; i < 8; i++) {
+        const opponent1Card = document.createElement('img');
+        const opponent2Card = document.createElement('img');
+        const teammateCard = document.createElement('img');
+        opponent1Card.src = "assets/imgs/cards/card-back-red.png";
+        opponent2Card.src = "assets/imgs/cards/card-back-red.png";
+        teammateCard.src = "assets/imgs/cards/card-back-red.png";
+
+        opponent1Hand.appendChild(opponent1Card);
+        opponent2Hand.appendChild(opponent2Card);
+        teammateHand.appendChild(teammateCard);
+
+    }
+
 }

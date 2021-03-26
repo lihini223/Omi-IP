@@ -25,7 +25,7 @@ module.exports = (io) => {
                 const userTokenData = jwt.verify(socket.handshake.query.token, process.env.JWT_TOKEN);
 
                 const user = await User.findOne({ _id: userTokenData.dbId });
-            
+
                 if (user.username == userTokenData.username) {
                     clientConnect(io, socket, user);
                 }
@@ -45,7 +45,7 @@ function clientConnect(io, socket, user) {
 
     let room = socket.handshake.query.room;
     let scoreLimit = parseInt(socket.handshake.query.scoreLimit);
-    
+
     // check if room exists
     if (io.sockets.adapter.rooms.get(room)) {
         if (!games.get(room)) return;
@@ -54,7 +54,7 @@ function clientConnect(io, socket, user) {
             // check if player is already in the room
             for (const player of games.get(room).players.values()) {
                 if (playerId == player.id) {
-                    socket.emit('room-error', { messsage: 'Player already in the room '});
+                    socket.emit('room-error', { messsage: 'Player already in the room ' });
                     return;
                 }
             }
@@ -137,17 +137,17 @@ function startNewOmiGame(io, room) {
     const game = games.get(room);
 
     game.startGame();
-    
+
     newMatch(io, room, game);
 }
 
 function newMatch(io, room, game) {
     game.newMatch();
-    
+
     for (let i = 1; i <= 4; i++) {
         const socketId = game.players.get(i).socketId;
         const playerHand = game.players.get(i).hand;
-        
+
         io.to(socketId).emit('player-hand', Array.from(playerHand.values()));
 
         if (getPlayerNumber(game.players, socketId) == game.trumpCaller) {
