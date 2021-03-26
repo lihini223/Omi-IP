@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="/admins/logout">Logout</a>
+
+    <section class="r-section-new">
+        <h2>New Advertisement</h2>
+        <%- include('./partials/messages') %>
+        <form action="/advertisements/new" method="POST" enctype="multipart/form-data">
+            <div>
+                <input type="text" name="title" id="title" placeholder="Title">
+            </div>
+            <div>
+                <textarea name="details" id="details" cols="30" rows="10" placeholder="Advertisement details"></textarea>
+            </div>
+            <div>
+                <input type="text" name="link" id="link" placeholder="Link">
+            </div>
+            <div>
+                <input type="file" name="advertisementImage" id="image" accept="image/*" onchange="previewImage(event)">
+                <img id="image-preview">
+            </div>
+            <button type="submit" class="r-new-submit">Submit</button>
+        </form>
+    </section>
+
+    <% if(typeof advertisements != 'undefined') { %>
+        <section>
+            <h2>Advertisements</h2>
+            <% advertisements.forEach(function(advertisement){ %>
+                <div>
+                    <img src="<%= advertisement.advertisementImagePath %>" alt="Advertisement Image">
+                    <div id="d<%= advertisement._id %>">
+                        <h3><%= advertisement.title %></h3>
+                        <p><%= advertisement.details %></p>
+                    </div>
+                    <form action="/advertisements/edit/<%= advertisement._id %>" method="POST" id="f<%= advertisement._id %>">
+                        <div>
+                            <input type="text" name="title" id="title" value="<%= advertisement.title %>">
+                        </div>
+                        <div>
+                            <textarea name="details" id="details" cols="30" rows="10"><%= advertisement.details %></textarea>
+                        </div>
+                        <button type="submit">Save</button>
+                        <button type="button" onclick="cancelEdit(`<%= advertisement._id %>`)">Cancel</button>
+                    </form>
+                    <button onclick="openEdit(`<%= advertisement._id %>`)"></button>
+                    <form action="/advertisements/delete/<%= advertisement._id %>?_method=DELETE" method="POST">
+                        <button type="submit"></button>
+                    </form>
+                </div>
+            <% }); %>
+        </section>
+    <% } %>
+
+    <script src="/js/advertisements.js" defer></script>
+</body>
+</html>
