@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="room.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="room-main-div">
+        <div class="room-navbar">
+            <div class="nav-items">
+                <div class="download-btn space">Download PC App</div>
+                <div class="player-score-div space">
+                    <img style="height: 90%;" class="player-score" src="assets/imgs/room-page/Group 4 new.png" alt="">
+                    <span class="score">500</span>
+                </div>
+                <img style="height: 50px;" class="logout-btn space" src="assets/imgs/room-page/Group 6.png" alt="">
+            </div>
+
+        </div>
+        <div class="game-logo">
+            <img class="game-logo-img" src="assets/imgs/room-page/Group 1.png" alt="">
+        </div>
+        <div class="room-container">
+            <div class="container-btns small-btn" onclick="popupLeaderboard();"><span
+                    class="container-texts">Leaderboard</span></div>
+            <div class="container-btns" onclick="popupJoinParty()"><span class="container-texts">Join Party</span></div>
+            <div class="container-btns small-btn"><span class="container-texts">Create Party</span></div>
+        </div>
+        <div class="room-addbar">
+            <div class="addbar"></div>
+        </div>
+    </div>
+    <div class="room-popups">
+        <div class="mid-popup-div" id="join-party-div">
+            <div class="mid-popup-head-div">
+                <span class="popup-text" id="join-party-text" >Join Party</span>
+                <div class="close-btn" onclick="popoutDiv()">
+                    <img src="assets/imgs/room-page/Close Button.png" alt="">
+                </div>
+            </div>
+            <input id="room-id" type="text" placeholder="Room ID">
+            <div class="join-btn">Join</div>
+        </div>
+
+        <div class="mid-popup-div" id="leaderboard-div">
+            <div class="mid-popup-head-div">
+                <span class="popup-text">Leaderboard</span>
+                <div class="close-btn" onclick="popoutDiv()">
+                    <img src="assets/imgs/room-page/Close Button.png" alt="">
+                </div>
+            </div>
+
+            <div class="leaderboard-score">
+                <div class="player-name div-space">1.player name</div>
+                <div class="player-ranking div-space">500</div>
+            </div>
+            <div class="leaderboard-score">
+                <div class="player-name div-space">1.player name</div>
+                <div class="player-ranking div-space">500</div>
+            </div>
+            <div class="leaderboard-score">
+                <div class="player-name div-space">1.player name</div>
+                <div class="player-ranking div-space">500</div>
+            </div>
+            <div class="leaderboard-score">
+                <div class="player-name div-space">1.player name</div>
+                <div class="player-ranking div-space">500</div>
+            </div>
+            <div class="leaderboard-score">
+                <div class="player-name div-space">1.player name</div>
+                <div class="player-ranking div-space">500</div>
+            </div>
+            <div class="leaderboard-score">
+                <div class="player-name div-space">1.player name</div>
+                <div class="player-ranking div-space">500</div>
+            </div>
+            <div class="leaderboard-score">
+                <div class="player-name div-space">1.player name</div>
+                <div class="player-ranking div-space">500</div>
+            </div>
+            <div class="leaderboard-score">
+                <div class="player-name div-space">1.player name</div>
+                <div class="player-ranking div-space">500</div>
+            </div>
+            <div class="leaderboard-score">
+                <div class="player-name">1.player name</div>
+                <div class="player-ranking div-space">500</div>
+            </div>
+        </div>
+    </div>
+    <script src="room.js"></script>
+</body>
+
+</html>
