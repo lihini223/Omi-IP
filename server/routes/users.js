@@ -31,37 +31,31 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    
     try{
         const user = await User.findOne({ email: req.body.email });
 
-        if(!user) return res.json({ error: "Invalid Email"});
+        if(!user) return res.json({ status: 'error', error: "Invalid Email"});
 
         if(await bcrypt.compare(req.body.password, user.password)){
-
             const playerData = {
                 dbId: user._id,
                 username: user.username
             };
             
             const accessToken = jwt.sign(playerData, process.env.JWT_TOKEN); //encrypt the player data
-            console.log(accessToken);
+
             return res.json({
-                message: "login successfull",
+                status: "success",
                 accessToken
-            })
+            });
         }
         else{   
-            return res.json({error: "Incorrect password"}) 
+            return res.json({ status: 'error', error: "Incorrect password" });
         }
-        
-
-        console.log(user);
     }
     catch(er){
         console.log(er);
     }
-    
 });
 
 module.exports = router;

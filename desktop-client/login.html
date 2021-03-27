@@ -23,6 +23,7 @@
     </div>
 
     <script>
+        const fs = require('fs').promises;
         const form = document.querySelector('form');
 
         form.addEventListener('submit', e => {
@@ -57,21 +58,15 @@
             });
 
             const data = await res.json();
+
+            saveToken(data.accessToken);
             
-            if (data.status == 'success') {
-                setCookie(data.accessToken);
-                window.location = 'index.html';
-            } else {
-                console.log(data);
-            }
+            window.location = 'home.html';
         }
 
-        function setCookie(token) {
-            console.log("saving cookie");
-            const d = new Date();
-            d.setTime(d.getTime() + 2*24*60*60*1000);
-            const expires = 'expires='+ d.toUTCString();
-            document.cookie = 'omi-token' + '=' + token + ';' + expires + ';path=/';
+        async function saveToken(token) {
+            console.log(token);
+            await fs.writeFile('token.txt', token);
         }
     </script>
 </body>
