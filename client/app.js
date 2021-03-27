@@ -143,7 +143,7 @@ socket.on('played-card', data => {
         //playCard(data);
     }
     tableCard(data);
-    otherCardMove(1, 'S10');
+    otherCardMove(getRelativePlayerNumber(playerNumber, data.player), data.card.imageName.replace('.png', ''));
 });
 
 // your turn to call trumps
@@ -322,10 +322,7 @@ function showRandomCards() {
 
 function playerCardMove(img, card) {
     let rect = img.getBoundingClientRect();
-
-
-    var bodyRect = document.body.getBoundingClientRect();
-    console.log(rect);
+    let bodyRect = document.body.getBoundingClientRect();
     let middleOfScreen = bodyRect.width / 2;
     let offSet = middleOfScreen - rect.x;
 
@@ -360,26 +357,58 @@ function invalidCard(img) {
     }, 800)
 }
 
+function offSetX(playerCard) {
+    let rect = playerCard.getBoundingClientRect();
+    let bodyRect = document.body.getBoundingClientRect();
+    let middleOfScreenX = bodyRect.width / 2;
+    let offSetX = middleOfScreenX - rect.x;
+
+    return offSetX;
+}
+
+function offSetY(playerCard) {
+    let rect = playerCard.getBoundingClientRect();
+    let bodyRect = document.body.getBoundingClientRect();
+    let middleOfScreenY = bodyRect.height / 2;
+    let offSetY = middleOfScreenY - rect.y;
+    return offSetY;
+}
 
 function otherCardMove(player, card) {
+    if (player == 1) return;
 
     let playerCard;
     let cardNumber = card;
-    if (player == 1) {
-        playerCard = teammateHand.children[Math.floor(Math.random() * teammateHand.children.length)]
-    } else if (player == 2) {
-        playerCard = opponent1Hand.children[Math.floor(Math.random() * opponent1Hand.children.length)]
+
+
+
+
+    let playerPositionX
+
+    if (player == 2) {
+        playerCard = opponent1Hand.children[Math.floor(Math.random() * opponent1Hand.children.length)];
+        playerPositionX = offSetX(playerCard) - offSetX(playerCard) * 0.4;
+        playerCard.style.transition = "transform 0.5s linear 0s";
+        playerCard.style.transform = `translatey(${offSetY(playerCard)}px) translatex(${playerPositionX}px) rotatey(180deg) `;
+        setTimeout(() => {
+            playerCard.src = "assets/imgs/cards/" + cardNumber + ".png";
+        }, 250);
     } else if (player == 3) {
-        playerCard = opponent2Hand.children[Math.floor(Math.random() * opponent2Hand.children.length)]
+        playerCard = teammateHand.children[Math.floor(Math.random() * teammateHand.children.length)];
+
+        playerPositionX = offSetX(playerCard) - offSetX(playerCard) * 0.4;
+        playerCard.style.transition = "transform 0.5s linear 0s";
+        playerCard.style.transform = `translatey(${offSetY(playerCard)}px) translatex(${playerPositionX}px) 
+        rotatey(180deg) `;
+
+        setTimeout(() => {
+            playerCard.src = "assets/imgs/cards/" + cardNumber + ".png";
+        }, 250);
+    } else if (player == 4) {
+        playerCard = opponent2Hand.children[Math.floor(Math.random() * opponent2Hand.children.length)];
     }
-
-    playerCard.style.transition = "transform 0.5s linear 0s";
-    playerCard.style.transform = "translatey(-200%) rotatey(180deg)";
-    setTimeout(() => {
-        playerCard.style.content = "url(assets/imgs/cards/" + cardNumber + ".jpg)";
-    }, 250);
-
 }
+otherCardMove(3, 'S10');
 
 function createHands() {
 
@@ -398,3 +427,31 @@ function createHands() {
     }
 
 }
+
+function getRelativePlayerNumber(playerNumber, otherPlayer) {
+    if (playerNumber == 1) return otherPlayer;
+
+    if (playerNumber == 2) {
+        if (otherPlayer == 1) return 4;
+        if (otherPlayer == 2) return 1;
+        if (otherPlayer == 3) return 2;
+        if (otherPlayer == 4) return 3;
+    }
+
+    if (playerNumber == 3) {
+        if (otherPlayer == 1) return 3;
+        if (otherPlayer == 2) return 4;
+        if (otherPlayer == 3) return 1;
+        if (otherPlayer == 4) return 2;
+    }
+
+    if (playerNumber == 4) {
+        if (otherPlayer == 1) return 2;
+        if (otherPlayer == 2) return 3;
+        if (otherPlayer == 3) return 4;
+        if (otherPlayer == 4) return 1;
+    }
+
+    return false;
+}
+
