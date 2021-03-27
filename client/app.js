@@ -395,20 +395,44 @@ function otherCardMove(player, card) {
         }, 250);
     } else if (player == 3) {
         playerCard = teammateHand.children[Math.floor(Math.random() * teammateHand.children.length)];
+        console.log(playerCard)
+
+        let rect = playerCard.getBoundingClientRect();
+        let bodyRect = document.body.getBoundingClientRect();
+        console.log(rect);
+        let middleOfScreen = bodyRect.width / 2;
+        let offSet = middleOfScreen - rect.x;
+
+
+        /*playerCard.style.transition = "transform 0.5s ease";
+
+
+        playerCard.style.transform = `translate(${offSet}px,180%) 
+                            translateX(-50%) 
+                            rotatex(180deg) scale(1.5)`;*/
+
 
         playerPositionX = offSetX(playerCard) - offSetX(playerCard) * 0.4;
+        playerPositionY = offSetY(playerCard) - offSetY(playerCard) * 0.6;
+
         playerCard.style.transition = "transform 0.5s linear 0s";
-        playerCard.style.transform = `translatey(${offSetY(playerCard)}px) translatex(${playerPositionX}px) 
-        rotatey(180deg) `;
+        playerCard.style.transform = `translatey(${playerPositionY}px) translateX(${offSetX(playerCard)}px) rotatey(180deg) `;
 
         setTimeout(() => {
             playerCard.src = "assets/imgs/cards/" + cardNumber + ".png";
         }, 250);
     } else if (player == 4) {
         playerCard = opponent2Hand.children[Math.floor(Math.random() * opponent2Hand.children.length)];
+
+        playerPositionX = offSetX(playerCard) - offSetX(playerCard) * 0.5;
+        playerCard.style.transition = "transform 0.5s linear 0s";
+        playerCard.style.transform = `translatey(${offSetY(playerCard)}px) translatex(${playerPositionX}px) rotatey(180deg) `;
+        setTimeout(() => {
+            playerCard.src = "assets/imgs/cards/" + cardNumber + ".png";
+        }, 250);
     }
 }
-otherCardMove(3, 'S10');
+
 
 function createHands() {
 
