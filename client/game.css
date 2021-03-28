@@ -99,12 +99,20 @@ nav{
     
 }
 .middle-left-card img,.middle-right-card img{
-    transform: rotate(90deg) scale(0.6) ;
+    
     margin-top: -90px;
     
     height: 33%;
     box-shadow: 0 3px 16px rgba(0, 0, 0, 0.637);
 
+}
+
+.middle-left-card img {
+    transform: rotate(90deg) scale(0.6) ;
+}
+
+.middle-right-card img {
+    transform: rotate(-90deg) scale(0.6) ;
 }
 
 .team-cards{
@@ -121,6 +129,10 @@ nav{
     margin-left: -20px;
     box-shadow: 0 3px 16px rgba(0, 0, 0, 0.507);
     transition:transform 500ms ease;
+}
+
+#teammate-hand img {
+    transform:rotate(180deg);
 }
 #player-1-cards img:hover{
     transform:scale(1.2) translateY(-20%);
