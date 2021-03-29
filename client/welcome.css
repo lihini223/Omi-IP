@@ -15,7 +15,7 @@ body{
     overflow:hidden;
 }
 .menu-buttons{
-    display: none;/*flex*/
+    display: flex;/*flex*/
     position: absolute;
     top: 70%;
     left: 50%;
@@ -24,8 +24,9 @@ body{
     flex-direction: column;
     align-items:center;
     justify-content:center;
+    opacity: 0;
     
-    animation: slide-down 1000ms ease;
+    animation: slide-down 1000ms ease 2500ms forwards;
 }
 @keyframes slide-down{
     from{
@@ -73,7 +74,6 @@ body{
     top: 50%;
     width: 30%;
     transform:translateY(-50%);
-    
     animation:getting-bigger 2000ms ease, omi-logo-second 1000ms ease 2000ms forwards;
 
 }
