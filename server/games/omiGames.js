@@ -3,6 +3,7 @@ const { nanoid } = require('nanoid');
 
 const User = require('../models/User');
 const { validateSocket } = require('../config/auth');
+const { updateScore } = require('./omi-db');
 
 const OmiGame = require('./omi/OmiGame');
 const Player = require('./omi/Player');
@@ -242,6 +243,18 @@ function endGame(io, room, game) {
     game.endGame();
 
     io.to(room).emit('game-finished', { gameWinner: game.winner });
+
+    updateScores(game);
+}
+
+function updateScores(game) {
+    if (game.winner == 1) {
+        updateScore(String(game.players.get(1).id));
+        updateScore(String(game.players.get(3).id));
+    } else if (game.winner == 2) {
+        updateScore(String(game.players.get(2).id));
+        updateScore(String(game.players.get(4).id));
+    }
 }
 
 // helper function to get player number of socket
