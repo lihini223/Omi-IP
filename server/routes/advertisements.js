@@ -128,3 +128,19 @@ router.delete('/delete/:id', checkAuthenticated, async (req, res) => {
         res.redirect('/admins/advertisements');
     }
 });
+
+
+// get random advertisement
+router.get('/random', async (req, res) => {
+    try {
+        const randomAdvertisement = await Advertisement.find({}).sort({ views: 1 }).limit(1);
+        
+        const updatedAdvertisement = await Advertisement.updateOne({ _id: randomAdvertisement[0]._id }, { views: randomAdvertisement[0].views + 1 });
+
+        res.json({ advertisement: randomAdvertisement[0] });
+    } catch(err) {
+        console.log(err);
+        res.json({ advertisement: {} });
+    }
+});
+
