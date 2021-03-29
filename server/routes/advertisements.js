@@ -28,7 +28,6 @@ const upload = multer({
     storage: storage
 });
 
-
 /* router.get('/advertisements', checkAuthenticated, async (req, res) => {
     try{
         const advertisements = await Advertisement.find({});
@@ -81,7 +80,6 @@ router.post('/new', checkAuthenticated, upload.single('advertisementImage'), asy
     }
 });
 
-
 router.post('/edit/:id', checkAuthenticated, async (req, res) => {
     const advertisementId = req.params.id;
 
@@ -110,7 +108,6 @@ router.post('/edit/:id', checkAuthenticated, async (req, res) => {
     }
 });
 
-
 router.delete('/delete/:id', checkAuthenticated, async (req, res) => {
     const advertisementId = req.params.id;
 
@@ -129,7 +126,6 @@ router.delete('/delete/:id', checkAuthenticated, async (req, res) => {
     }
 });
 
-
 // get random advertisement
 router.get('/random', async (req, res) => {
     try {
@@ -143,7 +139,6 @@ router.get('/random', async (req, res) => {
         res.json({ advertisement: {} });
     }
 });
-
 
 // visit advertisement
 router.get('/visit/:id', async (req, res) => {
@@ -161,3 +156,10 @@ router.get('/visit/:id', async (req, res) => {
     }
 });
 
+function removeAdvertisementImage(fileName){
+    fs.unlink(path.join(uploadPath, fileName), err => {
+        if(err) console.error(err);
+    });
+}
+
+module.exports = router;
