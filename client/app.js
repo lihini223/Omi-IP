@@ -74,6 +74,7 @@ const player4Name = document.querySelector("#player-4-name");
 const opponent1Hand = document.querySelector("#opponent-1-hand");
 const opponent2Hand = document.querySelector("#opponent-2-hand");
 const teammateHand = document.querySelector("#teammate-hand");
+const inviteYourFriends = document.querySelector("#invite-your-friends");
 
 
 let matchNumber = 1;
@@ -82,7 +83,7 @@ let playerHand = [];
 let matchPlayers = [];
 let firstCard = null;
 let currentPlayer = 1;
-
+let tableCards = [];
 socket.on('connection-error', data => {
     console.log(data);
     window.location = 'login.html';
@@ -95,6 +96,8 @@ socket.on('room-error', data => {
 
 socket.on('new-room', data => {
     console.log(data);
+    inviteYourFriends.style.display = "flex";
+    inviteYourFriends.innerHTML = `Room ID : <span>${data.roomId}</span>`
 });
 
 // sends all the players currently in the room when a new player joins
@@ -142,7 +145,6 @@ socket.on('played-card', data => {
     if (data.player == playerNumber) {
         //playCard(data);
     }
-    tableCard(data);
     otherCardMove(getRelativePlayerNumber(playerNumber, data.player), data.card.imageName.replace('.png', ''));
 });
 
@@ -200,6 +202,7 @@ function createHand(hand) {
             if (playerNumber == currentPlayer) {
                 if (validateCard(card)) {
                     socket.emit('play-card', card);
+                    tableCards.push(img);
                     playerCardMove(img, card);
                 } else {
                     invalidCard(img);
@@ -208,10 +211,7 @@ function createHand(hand) {
             else {
                 invalidCard(img);
             }
-
-
         });
-
         player1Cards.appendChild(img);
     });
 }
@@ -253,39 +253,48 @@ function trumpCard(data) {
     }
 }
 
-function tableCard(data) {
-    if (data.player == 1) {
-        playerOneMidCard.src = `assets/imgs/cards/${data.card.imageName}`;
-    } else if (data.player == 2) {
-        playerTwoMidCard.src = `assets/imgs/cards/${data.card.imageName}`;
-    } else if (data.player == 3) {
-        playerThreeMidCard.src = `assets/imgs/cards/${data.card.imageName}`;
-    } else if (data.player == 4) {
-        playerFourMidCard.src = `assets/imgs/cards/${data.card.imageName}`;
-    }
-}
-
 function roundWinner(data) {
-    setTimeout(clearTable, 2000);
     firstCard = null;
-}
+    let bodyRect = document.body.getBoundingClientRect();
 
-function clearTable() {
-    playerOneMidCard.src = '';
-    playerTwoMidCard.src = '';
-    playerThreeMidCard.src = '';
-    playerFourMidCard.src = '';
+    let relativeRoundWinner = getRelativePlayerNumber(playerNumber, data.roundWinner);
+
+    if (relativeRoundWinner == 1) {
+        for (let i = 0; i < 4; i++) {
+            tableCards[i].style.transform = `translateY(${bodyRect.height}px)`;
+        }
+    } else if (relativeRoundWinner == 2) {
+        for (let i = 0; i < 4; i++) {
+            tableCards[i].style.transform = `translateX(${bodyRect.width}px)`;
+        }
+
+    } else if (relativeRoundWinner == 3) {
+        for (let i = 0; i < 4; i++) {
+            tableCards[i].style.transform = `translateY(-${bodyRect.height}px)`;
+        }
+
+    } else if (relativeRoundWinner == 4) {
+        for (let i = 0; i < 4; i++) {
+            tableCards[i].style.transform = `translateX(-${bodyRect.width}px)`;
+        }
+
+    }
+
+    console.log(tableCards);
 }
 
 function playerConnect(data) {
+
+    playerConnectDiv.innerHTML = '';
     console.log(data);
     const players = data.players;
 
     players.forEach(player => {
+
         const playerDiv = document.createElement('div');
         playerDiv.innerHTML = `
         <div>
-            <p><br><span>${player.playerNumber}.</span>${player.playerName}</p>
+            <span>${player.playerNumber}.</span>${player.playerName}<br>
         </div>
         `;
 
@@ -296,10 +305,12 @@ function playerConnect(data) {
 function startGame() {
     waitingForTrumps.style.display = 'none';
     playerConnectDiv.style.display = 'none';
+    document.querySelector("#wating-for-players").style.display = 'none';
     gameDetails.style.display = 'flex';
     gameDetails.innerText = 'Game is starting';
     setTimeout(() => {
         gameDetails.style.display = 'none';
+        inviteYourFriends.style.display = 'none';
         waitingForTrumps.style.display = 'flex';
     }, 2000);
 
@@ -331,7 +342,7 @@ function playerCardMove(img, card) {
 
 
     img.style.transform = `translate(${offSet}px,-150%) 
-                            translateX(-50%) 
+                            translateX(-50%) scale(1.2)
                             rotate(${offSet > 0 ? '-' : ''}180deg)`;
 
     console.log(playerHand);
@@ -343,11 +354,11 @@ function playerCardMove(img, card) {
     }
     console.log(playerHand);
 
-    setTimeout(() => {
-        img.remove();
-    }, 1000);
+
 
 }
+
+
 
 function invalidCard(img) {
     img.style.animation = "invalid-move 800ms ease";
@@ -379,48 +390,36 @@ function otherCardMove(player, card) {
 
     let playerCard;
     let cardNumber = card;
-
-
-
-
-    let playerPositionX
+    let playerPositionX;
 
     if (player == 2) {
         playerCard = opponent1Hand.children[Math.floor(Math.random() * opponent1Hand.children.length)];
         playerPositionX = offSetX(playerCard) - offSetX(playerCard) * 0.4;
         playerCard.style.transition = "transform 0.5s linear 0s";
-        playerCard.style.transform = `translatey(${offSetY(playerCard)}px) translatex(${playerPositionX}px) rotatey(180deg) `;
+        playerCard.style.transform = `translatey(${offSetY(playerCard)}px) translatex(${playerPositionX}px) rotateX(180deg) rotateY(180deg) rotateZ(0deg)`;
         setTimeout(() => {
             playerCard.src = "assets/imgs/cards/" + cardNumber + ".png";
         }, 250);
+
     } else if (player == 3) {
         playerCard = teammateHand.children[Math.floor(Math.random() * teammateHand.children.length)];
         console.log(playerCard)
 
         let rect = playerCard.getBoundingClientRect();
         let bodyRect = document.body.getBoundingClientRect();
-        console.log(rect);
+
         let middleOfScreen = bodyRect.width / 2;
-        let offSet = middleOfScreen - rect.x;
+        let offSet = (middleOfScreen - rect.x) * -1;
 
-
-        /*playerCard.style.transition = "transform 0.5s ease";
-
-
-        playerCard.style.transform = `translate(${offSet}px,180%) 
-                            translateX(-50%) 
-                            rotatex(180deg) scale(1.5)`;*/
-
-
-        playerPositionX = offSetX(playerCard) - offSetX(playerCard) * 0.4;
         playerPositionY = offSetY(playerCard) - offSetY(playerCard) * 0.6;
 
         playerCard.style.transition = "transform 0.5s linear 0s";
-        playerCard.style.transform = `translatey(${playerPositionY}px) translateX(${offSetX(playerCard)}px) rotatey(180deg) `;
+        playerCard.style.transform = `translatey(${playerPositionY}px) translateX(${offSet * 2}px) translateX(-50%) rotatey(180deg) scale(1.45)`;
 
         setTimeout(() => {
             playerCard.src = "assets/imgs/cards/" + cardNumber + ".png";
         }, 250);
+
     } else if (player == 4) {
         playerCard = opponent2Hand.children[Math.floor(Math.random() * opponent2Hand.children.length)];
 
@@ -431,10 +430,18 @@ function otherCardMove(player, card) {
             playerCard.src = "assets/imgs/cards/" + cardNumber + ".png";
         }, 250);
     }
+    tableCards.push(playerCard);
 }
+/*
+otherCardMove(2, 'S10');
+otherCardMove(3, 'S10');
+otherCardMove(4, 'S10');*/
 
 
 function createHands() {
+    opponent1Hand.innerHTML = '';
+    opponent2Hand.innerHTML = '';
+    teammateHand.innerHTML = '';
 
     for (let i = 0; i < 8; i++) {
         const opponent1Card = document.createElement('img');
