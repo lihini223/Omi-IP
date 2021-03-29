@@ -109,3 +109,22 @@ router.post('/edit/:id', checkAuthenticated, async (req, res) => {
         res.redirect('/admins/advertisements');
     }
 });
+
+
+router.delete('/delete/:id', checkAuthenticated, async (req, res) => {
+    const advertisementId = req.params.id;
+
+    try{
+        const advertisement = await Advertisement.findOne({ _id: advertisementId });
+
+        const deletedReport = await Advertisement.deleteOne({ _id: advertisementId });
+
+        if(advertisement.imageName && advertisement.imageName != null){
+            removeAdvertisementImage(advertisement.imageName);
+        }
+
+        res.redirect('/admins/advertisements');
+    } catch(err) {
+        res.redirect('/admins/advertisements');
+    }
+});
