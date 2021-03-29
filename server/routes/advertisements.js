@@ -144,3 +144,20 @@ router.get('/random', async (req, res) => {
     }
 });
 
+
+// visit advertisement
+router.get('/visit/:id', async (req, res) => {
+    try {
+        const advertisementId = req.params.id;
+        
+        const advertisement = await Advertisement.findOne({ _id: advertisementId });
+        
+        const updatedAdvertisement = await Advertisement.updateOne({ _id: advertisement._id }, { clicks: advertisement.clicks + 1 });
+
+        res.json({ status: 'success', link: advertisement.link });
+    } catch(err) {
+        console.log(err);
+        res.json({ status: 'error' });
+    }
+});
+
