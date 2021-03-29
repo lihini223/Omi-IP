@@ -12,4 +12,22 @@ function validateSocket(socket) {
     }
 }
 
+function checkAuthenticated(req, res, next){
+    if(req.isAuthenticated()){
+        return next();
+    }
+
+    res.redirect('/admins/login');
+}
+
+function checkNotAuthenticated(req, res, next){
+    if(req.isAuthenticated()){
+        return res.redirect('/admins/advertisements');
+    }
+
+    next();
+}
+
 module.exports.validateSocket = validateSocket;
+module.exports.checkAuthenticated = checkAuthenticated;
+module.exports.checkNotAuthenticated = checkNotAuthenticated;
