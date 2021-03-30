@@ -76,7 +76,6 @@ const opponent2Hand = document.querySelector("#opponent-2-hand");
 const teammateHand = document.querySelector("#teammate-hand");
 const inviteYourFriends = document.querySelector("#invite-your-friends");
 
-
 let matchNumber = 1;
 let playerNumber = -1;
 let playerHand = [];
@@ -84,6 +83,7 @@ let matchPlayers = [];
 let firstCard = null;
 let currentPlayer = 1;
 let tableCards = [];
+
 socket.on('connection-error', data => {
     console.log(data);
     window.location = 'login.html';
@@ -236,7 +236,6 @@ function callTrump(trump) {
     socket.emit('call-trump', trump);
     trumpCallDiv.style.display = 'none';
     popupDiv.style.display = 'none';
-
 }
 
 function trumpCard(data) {
@@ -259,32 +258,37 @@ function roundWinner(data) {
 
     let relativeRoundWinner = getRelativePlayerNumber(playerNumber, data.roundWinner);
 
-    if (relativeRoundWinner == 1) {
-        for (let i = 0; i < 4; i++) {
-            tableCards[i].style.transform = `translateY(${bodyRect.height}px)`;
+    setTimeout(() => {
+        if (relativeRoundWinner == 1) {
+            for (let i = 0; i < 4; i++) {
+                tableCards[i].style.transform = `translateY(${bodyRect.height}px)`;
+            }
+        } else if (relativeRoundWinner == 2) {
+            for (let i = 0; i < 4; i++) {
+                tableCards[i].style.transform = `translateX(${bodyRect.width}px)`;
+            }
+    
+        } else if (relativeRoundWinner == 3) {
+            for (let i = 0; i < 4; i++) {
+                tableCards[i].style.transform = `translateY(-${bodyRect.height}px)`;
+            }
+    
+        } else if (relativeRoundWinner == 4) {
+            for (let i = 0; i < 4; i++) {
+                tableCards[i].style.transform = `translateX(-${bodyRect.width}px)`;
+            }
         }
-    } else if (relativeRoundWinner == 2) {
-        for (let i = 0; i < 4; i++) {
-            tableCards[i].style.transform = `translateX(${bodyRect.width}px)`;
-        }
+    }, 2000);
 
-    } else if (relativeRoundWinner == 3) {
-        for (let i = 0; i < 4; i++) {
-            tableCards[i].style.transform = `translateY(-${bodyRect.height}px)`;
-        }
-
-    } else if (relativeRoundWinner == 4) {
-        for (let i = 0; i < 4; i++) {
-            tableCards[i].style.transform = `translateX(-${bodyRect.width}px)`;
-        }
-
-    }
+    setTimeout(() => {
+        tableCards = [];
+        console.log(tableCards);
+    }, 3000);
 
     console.log(tableCards);
 }
 
 function playerConnect(data) {
-
     playerConnectDiv.innerHTML = '';
     console.log(data);
     const players = data.players;
@@ -337,9 +341,7 @@ function playerCardMove(img, card) {
     let middleOfScreen = bodyRect.width / 2;
     let offSet = middleOfScreen - rect.x;
 
-
     img.style.transition = "transform 0.5s ease";
-
 
     img.style.transform = `translate(${offSet}px,-150%) 
                             translateX(-50%) scale(1.2)
@@ -353,12 +355,7 @@ function playerCardMove(img, card) {
         }
     }
     console.log(playerHand);
-
-
-
 }
-
-
 
 function invalidCard(img) {
     img.style.animation = "invalid-move 800ms ease";
@@ -437,7 +434,6 @@ otherCardMove(2, 'S10');
 otherCardMove(3, 'S10');
 otherCardMove(4, 'S10');*/
 
-
 function createHands() {
     opponent1Hand.innerHTML = '';
     opponent2Hand.innerHTML = '';
@@ -456,7 +452,6 @@ function createHands() {
         teammateHand.appendChild(teammateCard);
 
     }
-
 }
 
 function getRelativePlayerNumber(playerNumber, otherPlayer) {
@@ -485,4 +480,3 @@ function getRelativePlayerNumber(playerNumber, otherPlayer) {
 
     return false;
 }
-

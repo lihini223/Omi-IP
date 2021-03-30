@@ -77,7 +77,7 @@ async function fetchLeaderboard() {
         const result = await fetch('http://localhost:3000/scores/leaderboard');
         const data = await result.json();
 
-        return data;
+        return data.leaderboard;
     } catch(err) {
         console.log(err);
         return [];
@@ -115,7 +115,7 @@ function createRoom() {
 
 async function createLeaderboard() {
     const leaderboard = await fetchLeaderboard();
-    leaderboardDiv.innerHTML = '';
+    leaderboardElement.innerHTML = '';
     console.log(leaderboard);
 
     leaderboard.forEach(player => {
@@ -133,7 +133,7 @@ async function createLeaderboard() {
         playerDiv.appendChild(playerNameDiv);
         playerDiv.appendChild(playerRankingDiv);
 
-        leaderboardDiv.appendChild(playerDiv);
+        leaderboardElement.appendChild(playerDiv);
     });
 }
 
