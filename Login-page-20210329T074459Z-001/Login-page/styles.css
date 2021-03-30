@@ -1,0 +1,126 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.main-container{
+    height: 100vh;
+    width: 100vw;
+    background-image: url(assets/Mask\ Group\ 1.png);
+    background-size: cover;
+}
+#login{
+    height: 80%;
+}
+.login-div{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: rgb(22, 22, 22);
+    width: 30%;
+    height: 88%;
+    border-radius: 50px;
+    box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.671);
+}
+.logo-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 20%;
+}
+.form-header-text{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 15%;
+}
+.input-boxes-div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 35%;
+}
+.form-footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 20%;
+    /* background-color: springgreen; */
+}
+.form-footer-text{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+}
+
+.form-footer-text a{
+    text-decoration: none;
+}
+.logo{
+    width: 200px; 
+}
+.header-text{
+    font-size: 200%;
+    color: rgb(255, 255, 255);
+}
+.input-boxes{
+    margin: 10px;
+    padding: 5% 9% 5% 9%;
+    border-radius: 20px;
+    border: none;
+    background-color: rgb(71, 71, 71);
+}
+.input-boxes:focus{
+    outline: none;
+}
+.input-boxes::placeholder{
+    color: rgb(132, 132, 132);
+    font-size: 150%;
+}
+.form-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(255, 170, 0);
+    padding: 2% 11% 2% 11%;
+    border-radius: 50px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    transition: 0.5s transform ease;
+}
+.form-btn:hover{
+    box-shadow: 0px 0px 10px rgb(255, 255, 255);
+    transform: scale(1.05);
+}
+#form-btn-text{
+    font-size: 200%;
+}
+.footer-text{
+    font-size: 110%;
+    margin: 20px;
+    color: rgb(255, 255, 255);
+    }
+.home-btn{
+    width: 50px;
+    position: absolute;
+    top: 90%;
+    left: 95%;
+    cursor: pointer;
+    transition: 0.5s transform ease;
+    border-radius: 50%;
+}
+.home-btn:hover{
+    box-shadow: 0px 0px 10px rgb(255, 255, 255);
+    transform: scale(1.05);
+}
+.a{
+    text-decoration: none;
+}
