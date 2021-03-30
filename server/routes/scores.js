@@ -6,7 +6,18 @@ const router = express.Router();
 
 router.get('/leaderboard', async (req, res) => {
     try {
-        const leaderboard = await User.find({}).sort({ score: -1 }).limit(10);
+        const users = await User.find({}).sort({ score: -1 }).limit(10);
+
+        let rank = 0;
+        const leaderboard = users.map(user => {
+            rank += 1;
+            
+            return {
+                username: user.username,
+                score: user.score,
+                rank
+            }
+        });
         
         res.json({ leaderboard: leaderboard });
     } catch(err) {

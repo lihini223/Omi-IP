@@ -125,10 +125,12 @@ async function createLeaderboard() {
         const playerNameDiv = document.createElement('div');
         playerNameDiv.classList.add('player-name');
         playerNameDiv.classList.add('div-space');
+        playerNameDiv.innerText = `${player.rank}. ${player.username}`;
 
         const playerRankingDiv = document.createElement('div');
         playerRankingDiv.classList.add('player-ranking');
         playerRankingDiv.classList.add('div-space');
+        playerRankingDiv.innerText = `${player.score}`;
 
         playerDiv.appendChild(playerNameDiv);
         playerDiv.appendChild(playerRankingDiv);
