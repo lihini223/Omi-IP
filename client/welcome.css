@@ -1,0 +1,244 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body{
+    
+    background-image: url('assets/imgs/home-page/homeBG.png');
+    background-size: cover;
+    background-repeat:no-repeat;
+    background-position:center;
+    height: 100vh;
+    width: 100vw;
+    overflow:hidden;
+}
+.menu-buttons{
+    display: flex;/*flex*/
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 20;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+    opacity: 0;
+    
+    animation: slide-down 1000ms ease 2500ms forwards;
+}
+@keyframes slide-down{
+    from{
+        top: 65%;
+        opacity: 0;
+    }
+    to{
+        top: 70%;
+        opacity: 1;
+    }
+}
+
+
+.menu-button{
+    background-color:#FFE600;
+    color: #777777;
+    font-family: "Mouse";
+    width: 10rem;
+    padding: 15px 40px;
+    border-radius:2rem;
+    margin-bottom: 10px;
+    border:none;
+    cursor: pointer;
+    outline: none;
+    box-shadow:0 3px 13px rgba(255, 255, 255,0.22);
+    transition:transform 200ms ease;
+}
+.menu-button:hover{
+    transform: scale(1.05);
+    box-shadow: 0 0 16px rgba(255, 252, 204, 0.705);
+}
+
+@font-face {
+    font-family: "Mouse";
+    src: url("assets/fonts/Wicked-Mouse.otf");
+}
+.container{
+    width: 100%;
+    height: 100%;
+    
+
+}
+.omi-logo{
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    transform:translateY(-50%);
+    animation:getting-bigger 2000ms ease, omi-logo-second 1000ms ease 2000ms forwards;
+
+}
+.omi-logo-second{
+    position: absolute;  
+    top: 30%;
+    width: 30%;
+}
+.black-bar{
+    position:absolute;
+    width: 100%;
+    height: 8%;
+    background-color:#1D1D1D;
+}
+.black-bar-top{
+    top: -100%;
+    animation:black-bar-top 2000ms ease 2000ms forwards;
+}
+
+.black-bar-bottom{
+    bottom: -100%;
+    animation:black-bar-bottom 2000ms ease 2000ms forwards;
+}
+
+@keyframes black-bar-top{
+    from{
+        top:-10%;
+        opacity: 0;
+    }
+    to{
+        top:0%;
+        opacity: 1;
+    }
+}
+@keyframes black-bar-bottom{
+    from{
+        bottom:-10%;
+        opacity: 0;
+    }
+    to{
+        bottom:0%;
+        opacity: 1;
+    }
+}
+
+@keyframes omi-logo-second{
+    from{
+        top: 50%;
+        width: 40%;
+    }
+    to{
+        width: 30%;
+        top: 30%;
+    }
+}
+.bg-overlay{
+    position:absolute;
+    width: 100%;
+    height: 100%;
+    background-color:black;
+    top:0;
+    left:0;
+    opacity:0;
+    animation:opacity-zero-to-hero 2000ms ease 2000ms forwards;
+}
+@keyframes opacity-zero-to-hero{
+    from{
+        opacity:0;
+    }
+    to{
+        opacity:0.4;
+    }
+}
+
+.img-container{
+   /* animation: shake 1000ms ease;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes getting-bigger{
+    0%{
+        width: 0;
+        
+    }
+    100%{
+         width: 40%;
+         
+    }
+}
+@keyframes shake{
+    0%{
+        transform: rotate(0) ;
+    }
+    5%{
+        transform: rotate(-10deg) ;
+    }
+    10%{
+        transform: rotate(0deg) ;
+    }
+    15%{
+        transform: rotate(10deg) ;
+    }
+    20%{
+        transform: rotate(0) ;
+    }
+    25%{
+        transform: rotate(-10deg) ;
+    }
+    30%{
+        transform: rotate(0deg) ;
+    }
+    35%{
+        transform: rotate(10deg) ;
+    }
+    40%{
+        transform: rotate(0) ;
+    }
+    45%{
+        transform: rotate(-10deg) ;
+    }
+    50%{
+        transform: rotate(0) ;
+    }
+    55%{
+        transform: rotate(10deg) ;
+    }
+    60%{
+        transform: rotate(0deg) ;
+    }
+    65%{
+        transform: rotate(-10deg) ;
+    }
+    75%{
+        transform: rotate(0) ;
+    }
+    80%{
+        transform: rotate(10) ;
+    }
+    85%{
+        transform: rotate(0deg) ;
+    }
+    90%{
+        transform: rotate(-10deg) ;
+    }
+    95%{
+        transform: rotate(0) ;
+    }
+    100%{
+        transform: rotate(0) ;
+    }
+}
+
+@media (min-width:1500px){
+    .menu-button{
+        width: 16rem;
+
+        font-size: 1.5rem;
+        padding: 20px 40px;
+        border-radius:3rem;
+        margin-bottom: 1rem;
+    }
+    .omi-logo{
+        margin-top:40px ;
+    }
+}

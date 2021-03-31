@@ -138,7 +138,6 @@ function startNewOmiGame(io, room) {
     const game = games.get(room);
 
     game.startGame();
-    endGame(io, room, game);
     
     newMatch(io, room, game);
 }

@@ -29,7 +29,6 @@ function getCookie() {
 }
 
 if (getCookie() == '') {
-    console.log('no cookie');
     window.location = 'login.html';
 }
 

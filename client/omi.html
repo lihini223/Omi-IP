@@ -44,7 +44,7 @@
                 <img src="assets/imgs/diamonds.png" id="trump-of-game" alt="">
             </div>
             <div class="team-cards" id="teammate-hand">
-                <!--  <img src="assets/imgs/cards/card-back-red.png" alt="">
+                <!-- <img src="assets/imgs/cards/card-back-red.png" alt="">
                 <img src="assets/imgs/cards/card-back-red.png" alt="">
                 <img src="assets/imgs/cards/card-back-red.png" alt="">
                 <img src="assets/imgs/cards/card-back-red.png" alt="">
@@ -93,7 +93,7 @@
                     </div>
 
                 </div>
-                <div class="middle-left-card" id="opponent-1-hand">
+                <div class="middle-left-card" id="opponent-2-hand">
                     <!-- <img src="assets/imgs/cards/card-back-red.png" alt="">
                     <img src="assets/imgs/cards/card-back-red.png" alt="">
                     <img src="assets/imgs/cards/card-back-red.png" alt="">
@@ -112,7 +112,7 @@
                 <img src="" class="mid-cards" id="mid-card-4" alt="">
             </div>
             <div class="mid-right">
-                <div class="middle-right-card" id="opponent-2-hand">
+                <div class="middle-right-card" id="opponent-1-hand">
                     <!-- <img src="assets/imgs/cards/card-back-red.png" alt="">
                     <img src="assets/imgs/cards/card-back-red.png" alt="">
                     <img src="assets/imgs/cards/card-back-red.png" alt="">
@@ -213,10 +213,16 @@
         </div>
         <div class="popups">
             <div class="popup-inner waiting-for-trumps">Waiting for Trumps</div>
-
-            <div class="popup-inner player-connect-inner" id="playerConnectInner">Waiting for players harida</div>
+            <div class="invite-your-friends" id="invite-your-friends"></div>
+            <div class="popup-inner player-connect-inner" id="wating-for-players">
+                <div>
+                    Waiting for players
+                </div>
+                <div id="playerConnectInner"></div>
+            </div>
             <div class="popup-inner select-trumps" id="select-trumps-div">
                 <div class="choose-trumps">Choose Trumps</div>
+
                 <div class="trump-cards-symbols">
                     <div class="trump-cards" id="trump-spades" onclick="callTrump('S')"></div>
                     <div class="trump-cards" id="trump-hearts" onclick="callTrump('H')"></div>
@@ -226,10 +232,7 @@
 
             </div>
 
-            <div class="four-trump-cards">
-
-            </div>
-
+            <div class="four-trump-cards"></div>
             <div class="popup-inner game-details"></div>
 
         </div>
