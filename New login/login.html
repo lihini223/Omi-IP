@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="main-container">
+        <div class="login-div" id="login">
+            <div class="logo-div">
+                <img class="logo" src="assets/Group 1 with shadow.png" alt="">
+            </div>
+            <div class="form-header-text">
+                <span class="header-text">Login</span>
+            </div>
+            <form>
+                <div class="input-boxes-div">
+                    <input class="input-boxes" type="text" name="email" id="email" placeholder="E-mail">
+                    <input class="input-boxes" type="text" name="password" id="password" placeholder="Password">
+                </div>
+                <div class="messages"></div>
+                <div class="form-footer">
+                    <button type="submit" class="form-btn">Login</button>
+                </div>
+            </form>
+            <div class="form-footer-text">
+                <a href="register.html">
+                <span class="footer-text">Create account</span>
+                </a>
+            </div>
+        </div>
+        <img class="home-btn" src="assets/home-button.png" alt="">
+    </div>
+
+    <script>
+        const form = document.querySelector('form');
+        const messagesElement = document.querySelector('.messages');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            const email = formData.get('email');
+            const password = formData.get('password');
+
+            const user = {
+                email,
+                password
+            };
+
+            if (validateData(user)) {
+                logUser(user)
+            }
+        });
+
+        function validateData(user) {
+            return true
+        }
+
+        async function logUser(user) {
+            const res = await fetch('http://localhost:3000/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)
+            });
+
+            const data = await res.json();
+            
+            if (data.status == 'success') {
+                setCookie(data.accessToken);
+                window.location = 'lobby.html';
+            } else {
+                console.log(data);
+                messagesElement.innerText = data.error;
+            }
+        }
+
+        function setCookie(token) {
+            console.log("saving cookie");
+            const d = new Date();
+            d.setTime(d.getTime() + 2*24*60*60*1000);
+            const expires = 'expires='+ d.toUTCString();
+            document.cookie = 'omi-token' + '=' + token + ';' + expires + ';path=/';
+        }
+    </script>
+</body>
+</html>

@@ -1,12 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <title>Document</title>
+    <script type="text/javascript">
+        function validate_email(email) {
+            if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(loginform.email.value)) {
+                return (true)
+            }
+            alert("You have entered an invalid email address!")
+            return (false)
+        }
+
+    </script>
 </head>
+
 <body>
     <div class="main-container">
         <div class="login-div" id="login">
@@ -16,22 +28,29 @@
             <div class="form-header-text">
                 <span class="header-text">Login</span>
             </div>
-            <div class="input-boxes-div">
-                <input class="input-boxes" type="text" name="login-password id="login-password" placeholder="E-mail">
-                <input class="input-boxes" type="text" name="login-password id="login-password" placeholder="Password">
-            </div>
-            <div class="form-footer">
-                <div class="form-btn">
-                    <span id="form-btn-text">Login</span>
+            <form name="loginform" onsubmit="return validate_email()">
+                <div class="input-boxes-div">
+
+                    <input class="input-boxes" type="text" name="email" id=" email" placeholder="Email">
+                    <input class="input-boxes" type="password" name="password" id=" password"
+                        placeholder="Password"><br>
+                    <div class="form-footer">
+                        <div class="form-btn">
+                            <span id="form-btn-text">
+                                <input type="submit" name="" value="login">
+                            </span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </form>
             <div class="form-footer-text">
                 <a href="register.html">
-                <span class="footer-text" > Create account</span>
+                    <span class="footer-text"> Create account</span>
                 </a>
             </div>
         </div>
         <img class="home-btn" src="assets/home-button.png" alt="">
     </div>
 </body>
+
 </html>
