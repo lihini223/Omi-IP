@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+    <script type="text/javascript">
+      function validate_email(email) {
+            if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(registerform.email.value)) {
+                return (true)
+            }
+            alert("You have entered an invalid email address!")
+            return (false)
+        }
+    </script>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="login-div">
+            <div class="logo-div">
+                <img class="logo" src="assets/Group 1 with shadow.png" alt="">
+            </div>
+            <div class="form-header-text">
+                <span class="header-text">Register</span>
+            </div>
+            <form name="registerform" onsubmit="return  validate_email()">
+                <div class="input-boxes-div">
+                    <input class="input-boxes" type="text" name="name" placeholder="Name">
+                    <input class="input-boxes" type="text" name="email" placeholder="E-mail">
+                    <input class="input-boxes" type="text" name="password" placeholder="Password">
+                </div>
+                <div class="form-footer">
+                    <div class="form-btn">
+                        <span id="form-btn-text">
+                            <input type="submit" name="" value="register">
+                        </span>
+                    </div>
+                </div>
+            </form>
+            <div class="form-footer-text">
+                <a href="login.html">
+                    <span class="footer-text">Already have an Account? </span>
+                </a>
+            </div>
+        </div>
+        <img class="home-btn" src="assets/home-button.png" alt="">
+    </div>
+</body>
+
+</html>
